@@ -1,22 +1,21 @@
-# profile-create-function
-Cloud Function to create BookIt user profiles
+# profile-ops functions
+Cloud Function to handle profiles BookIt user profiles
 
-## Requirements
+## Supported Operations
+- POST: For the moment there is no payload validations so if you don't provide the below (minus the exact values) it will not work. Validations and schemas are next on the list
 
-### KMS Keys
-
-The environment mentioned below must be contained within an encrypted file called gcloud-env.yaml.enc in order for the deployment process to function properly and so that we do not expose credentials. Credentials are created based on an KMS Keyring and Key within the GCP Project names which are mentioned in the [cloudbuild.yaml](/cloudbuild.yaml) files. Everything was generated per the description provided by Google [Using encrypted resources with Cloud Build](https://cloud.google.com/cloud-build/docs/securing-builds/use-encrypted-secrets-credentials?authuser=1)
-
-### Environment Variables
-
-The cloud function is dependent on information for the sender email account. Therefore, we need to provide some variables to the function especially when deploying. Perform the following:
-
-* Create a file called `gcloud-env.yaml` in the root directory with the following attributes
-
-```yaml
-
+```json
+{
+	"uid": "TEST",
+	"firstName": "test-first-name",
+	"lastName": "test-last-name",
+	"gender": 0,
+	"isSocial": true,
+	"birthday": "05/02/1982",
+	"isProvider": false,
+	"phoneNumber": "1231231234"
+}
 ```
-
 
 ## Deploy
 

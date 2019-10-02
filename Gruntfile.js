@@ -19,6 +19,7 @@ module.exports = function(grunt) {
       cover: {
         options: {
           all: false,
+          extension: ['.ts'],
           'check-coverage': true,
           include: ['src/**/*.ts'],
           exclude: [],
@@ -26,10 +27,10 @@ module.exports = function(grunt) {
           functions: 90,
           branches: 90,
           statements: 90,
-          reporter: ['html', 'text', 'text-summary', 'cobertura'],
+          reporter: ['html', 'text', 'text-summary'],
           require: ['ts-node/register'],
-          sourceMap: false,
-          instrument: false
+          sourceMap: true,
+          instrument: true
         },
         cmd: false,
         args: ['grunt', 'mochaTest:unit']

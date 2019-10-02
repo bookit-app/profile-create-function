@@ -1,4 +1,4 @@
-# profile-ops functions
+# profile-services functions
 Cloud Function to handle profiles BookIt user profiles
 
 ## Supported Operations

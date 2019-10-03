@@ -7,7 +7,7 @@ const PROFILE_COLLECTION = 'profile';
 
 const profileRepositoryFactory = (firestore: Firestore) => {
   const createProfile = async (profile: IProfile) => {
-    const result = await firestore
+    await firestore
       .collection(PROFILE_COLLECTION)
       .doc(profile.uid)
       .create({

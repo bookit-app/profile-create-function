@@ -9,7 +9,7 @@ import { IProfileRepository } from '../../src/repository/profile-repository';
 
 const req = {
   body: {
-    birthday: new Date(),
+    birthday: '2018-11-13',
     firstName: 'test-first-name',
     gender: 1,
     isProvider: false,

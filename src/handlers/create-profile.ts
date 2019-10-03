@@ -22,6 +22,7 @@ function createProfileHandlerFactory(profileRepository: IProfileRepository) {
       const response = clone(failedSchemaValidation);
       response.technicalError = validator.errors;
       res.send(response);
+      return;
     }
 
     // TODO: Verify that the authenticated use is the user for the profiled profile.uid

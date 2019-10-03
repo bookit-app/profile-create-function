@@ -22,8 +22,22 @@ const profileRepositoryFactory = (firestore: Firestore) => {
     return;
   };
 
+  // const queryProfile = async (profileId: string) => {
+  //   const documentReference = await firestore
+  //     .collection(PROFILE_COLLECTION)
+  //     .doc(profileId)
+  //     .get();
+
+  //   if (documentReference.exists) {
+  //     return documentReference.data() as IProfile;
+  //   }
+
+  //   return undefined;
+  // };
+
   const repo: IProfileRepository = {
-    create: createProfile
+    create: createProfile//,
+    // findByProfileId: queryProfile
   };
 
   return repo;
@@ -42,6 +56,7 @@ export interface IProfile {
 
 export interface IProfileRepository {
   create: (profile: IProfile) => Promise<void>;
+  findByProfileId: (profileId: string) => Promise<IProfile | undefined>;
 }
 
 export { profileRepositoryFactory };

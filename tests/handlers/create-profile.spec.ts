@@ -1,51 +1,49 @@
 'use strict';
 
-import { expect, use } from 'chai';
-import chaiAsPromised from 'chai-as-promised';
-use(chaiAsPromised);
-
+import { expect } from 'chai';
+import { BAD_REQUEST, CREATED } from 'http-status-codes';
 import { stub } from 'sinon';
-import { createProfileHandlerFactory } from '../../src/handlers/create-profile';
-import { CREATED, BAD_REQUEST } from 'http-status-codes';
-import { duplicateProfile } from '../../src/handlers/error-responses';
-import {
-  IProfileRepository,
-  IProfile
-} from '../../src/repository/profile-repository';
+import { duplicateProfile } from '../../src/constants/error-responses';
+import { createProfileHandlerFactory } from '../../src/handlers';
+import { IProfileRepository } from '../../src/repository/profile-repository';
 
 const req = {
   body: {
-    firstName: 'test-first-name',
-    lastName: 'test-last-name',
     birthday: new Date(),
-    phoneNumber: '123-123-1234',
+    firstName: 'test-first-name',
     gender: 1,
+    isProvider: false,
     isSocial: true,
-    isProvider: false
+    lastName: 'test-last-name',
+    phoneNumber: '123-123-1234'
   }
 };
 
 const res = {
-  status: stub(),
   send: stub(),
-  sendStatus: stub()
+  sendStatus: stub(),
+  status: stub()
 };
 
 const createStub = stub();
+const findProfileByIdStub = stub();
 const profileRepositoryMock: IProfileRepository = {
-  create: createStub
+  create: createStub,
+  findByProfileId: findProfileByIdStub
 };
 
-const createProfileHandler = createProfileHandlerFactory(<IProfileRepository>(
-  profileRepositoryMock
-));
+const createProfileHandler = createProfileHandlerFactory(
+  profileRepositoryMock as IProfileRepository
+);
 
 describe('create-profile: unit tests', () => {
   it('should respond with a 201 when profile is created', () => {
     createStub.resolves();
     expect(createProfileHandler.createProfile(req, res)).to.be.fulfilled.then(
       () => {
+        // tslint:disable-next-line: no-unused-expression
         expect(res.sendStatus.called).to.be.true;
+        // tslint:disable-next-line: no-unused-expression
         expect(res.sendStatus.calledWithExactly(CREATED)).to.be.true;
       }
     );
@@ -55,9 +53,13 @@ describe('create-profile: unit tests', () => {
     createStub.rejects(new Error('FORCED ERROR'));
     expect(createProfileHandler.createProfile(req, res)).to.be.fulfilled.then(
       () => {
+        // tslint:disable-next-line: no-unused-expression
         expect(res.status.called).to.be.true;
+        // tslint:disable-next-line: no-unused-expression
         expect(res.status.calledWithExactly(BAD_REQUEST)).to.be.true;
+        // tslint:disable-next-line: no-unused-expression
         expect(res.send.called).to.be.true;
+        // tslint:disable-next-line: no-unused-expression
         expect(res.send.calledWith(duplicateProfile)).to.be.true;
       }
     );

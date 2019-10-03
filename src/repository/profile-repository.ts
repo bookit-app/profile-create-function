@@ -1,6 +1,7 @@
 'use strict';
 
 import { Firestore } from '@google-cloud/firestore';
+import { isEmpty } from 'lodash';
 
 const PROFILE_COLLECTION = 'profile';
 
@@ -22,22 +23,24 @@ const profileRepositoryFactory = (firestore: Firestore) => {
     return;
   };
 
-  // const queryProfile = async (profileId: string) => {
-  //   const documentReference = await firestore
-  //     .collection(PROFILE_COLLECTION)
-  //     .doc(profileId)
-  //     .get();
+  const queryProfile = async (profileId: string) => {
+    const documentReference = await firestore
+      .collection(PROFILE_COLLECTION)
+      .doc(profileId)
+      .get();
 
-  //   if (documentReference.exists) {
-  //     return documentReference.data() as IProfile;
-  //   }
+    if (!isEmpty(documentReference) && documentReference.exists) {
+      const profile = documentReference.data() as IProfile;
+      profile.uid = profileId;
+      return profile;
+    }
 
-  //   return undefined;
-  // };
+    return undefined;
+  };
 
   const repo: IProfileRepository = {
-    create: createProfile//,
-    // findByProfileId: queryProfile
+    create: createProfile,
+    findByProfileId: queryProfile
   };
 
   return repo;

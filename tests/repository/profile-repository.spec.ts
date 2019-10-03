@@ -5,16 +5,13 @@ import {
   DocumentReference,
   Firestore
 } from '@google-cloud/firestore';
-import { expect, use } from 'chai';
-import chaiAsPromised from 'chai-as-promised';
+import { expect } from 'chai';
 import { createStubInstance } from 'sinon';
 import {
   IProfile,
   IProfileRepository,
   profileRepositoryFactory
 } from '../../src/repository/profile-repository';
-
-use(chaiAsPromised);
 
 const profile: IProfile = {
   birthday: new Date(),
@@ -48,8 +45,33 @@ describe('profile-repository: unit tests', () => {
     });
   });
 
-  // context('query profile', () => {
-  //   it('should return profile when found', () => {});
-  //   it('should return undefined when no profile is found', () => {});
-  // });
+  context('query profile', () => {
+    it('should return profile when found', () => {
+      documentReference.get.resolves({
+        data: () => profile,
+        exists: true
+      });
+
+      expect(repo.findByProfileId(profile.uid)).to.be.fulfilled.then(
+        response => {
+          expect(response).to.deep.equal(profile);
+        }
+      );
+    });
+
+    it('should return undefined when no profile is found', () => {
+      documentReference.get.resolves({
+        // tslint:disable-next-line: no-empty
+        data: () => {},
+        exists: false
+      });
+
+      expect(repo.findByProfileId(profile.uid)).to.be.fulfilled.then(
+        response => {
+          // tslint:disable-next-line: no-unused-expression
+          expect(response).to.be.undefined;
+        }
+      );
+    });
+  });
 });

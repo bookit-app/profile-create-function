@@ -2,23 +2,41 @@
 
 import { Firestore } from '@google-cloud/firestore';
 import { METHOD_NOT_ALLOWED } from 'http-status-codes';
-import { createProfileHandlerFactory } from './handlers/create-profile';
+import {
+  createProfileHandlerFactory,
+  queryProfileHandlerFactory
+} from './handlers';
 import { profileRepositoryFactory } from './repository/profile-repository';
 
 const firestore = new Firestore();
 const profileRepository = profileRepositoryFactory(firestore);
 const handlers = {
-  createProfileHandler: createProfileHandlerFactory(profileRepository)
+  createProfileHandler: createProfileHandlerFactory(profileRepository),
+  queryProfileHandler: queryProfileHandlerFactory(profileRepository)
 };
 
 function createProfileFunction(req: any, res: any) {
-  switch (req.method) {
-    case 'POST':
-      return handlers.createProfileHandler.createProfile(req, res);
-    default:
-      res.sendStatus(METHOD_NOT_ALLOWED);
-      return;
+  if (req.method === 'POST') {
+    handlers.createProfileHandler.createProfile(req, res);
+  } else {
+    res.sendStatus(METHOD_NOT_ALLOWED);
   }
 }
 
-export { createProfileFunction };
+function queryProfileFunction(req: any, res: any) {
+  if (req.method === 'GET') {
+    handlers.queryProfileHandler.queryProfile(req, res);
+  } else {
+    res.sendStatus(METHOD_NOT_ALLOWED);
+  }
+}
+
+function updateProfileFunction(req: any, res: any) {
+  if (req.method === 'PUT') {
+    handlers.queryProfileHandler.queryProfile(req, res);
+  } else {
+    res.sendStatus(METHOD_NOT_ALLOWED);
+  }
+}
+
+export { createProfileFunction, queryProfileFunction, updateProfileFunction };

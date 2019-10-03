@@ -1,8 +1,8 @@
 'use strict';
 
-import { BAD_REQUEST, CREATED, METHOD_NOT_ALLOWED } from 'http-status-codes';
+import { BAD_REQUEST, CREATED } from 'http-status-codes';
+import { duplicateProfile } from '../constants/error-responses';
 import { IProfile, IProfileRepository } from '../repository/profile-repository';
-import { duplicateProfile } from './error-responses';
 
 function createProfileHandlerFactory(profileRepository: IProfileRepository) {
   const createProfile = async (req: any, res: any) => {
@@ -21,11 +21,9 @@ function createProfileHandlerFactory(profileRepository: IProfileRepository) {
     }
   };
 
-  const handler: ICreateProfileHandler = {
+  return {
     createProfile
-  };
-
-  return handler;
+  } as ICreateProfileHandler;
 }
 
 export interface ICreateProfileHandler {

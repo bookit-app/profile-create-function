@@ -1,47 +1,77 @@
 'use strict';
 
-import { expect, use } from 'chai';
-import chaiAsPromised from 'chai-as-promised';
-use(chaiAsPromised);
-
 import {
-  Firestore,
   CollectionReference,
-  DocumentReference
+  DocumentReference,
+  Firestore
 } from '@google-cloud/firestore';
+import { expect } from 'chai';
+import { createStubInstance } from 'sinon';
 import {
-  profileRepositoryFactory,
   IProfile,
-  IProfileRepository
+  IProfileRepository,
+  profileRepositoryFactory
 } from '../../src/repository/profile-repository';
-import { stub, createStubInstance } from 'sinon';
 
 const profile: IProfile = {
-  uid: 'test-profile',
-  firstName: 'test-first-name',
-  lastName: 'test-last-name',
   birthday: new Date(),
-  phoneNumber: '123-123-1234',
+  firstName: 'test-first-name',
   gender: 1,
+  isProvider: false,
   isSocial: true,
-  isProvider: false
+  lastName: 'test-last-name',
+  phoneNumber: '123-123-1234',
+  uid: 'test-profile'
 };
 
 describe('profile-repository: unit tests', () => {
-  let repo: IProfileRepository, documentReference: any;
+  let repo: IProfileRepository;
+  let documentReference: any;
 
   before(() => {
-    const collectionReference = <any>createStubInstance(CollectionReference);
+    const collectionReference = createStubInstance(CollectionReference) as any;
     const firestore = createStubInstance(Firestore);
-    documentReference = <any>createStubInstance(DocumentReference);
-    collectionReference.doc.returns(<DocumentReference>documentReference);
-    firestore.collection.returns(<CollectionReference>collectionReference);
+    documentReference = createStubInstance(DocumentReference) as any;
+    collectionReference.doc.returns(documentReference as DocumentReference);
+    firestore.collection.returns(collectionReference as CollectionReference);
 
-    repo = profileRepositoryFactory(<Firestore>firestore);
+    repo = profileRepositoryFactory(firestore as Firestore);
   });
 
-  it('create should resolve', () => {
-    documentReference.create.resolves();
-    expect(repo.create(profile)).to.be.fulfilled;
+  context('create', () => {
+    it('create should resolve', () => {
+      documentReference.create.resolves();
+      return expect(repo.create(profile)).to.be.fulfilled;
+    });
+  });
+
+  context('query profile', () => {
+    it('should return profile when found', () => {
+      documentReference.get.resolves({
+        data: () => profile,
+        exists: true
+      });
+
+      expect(repo.findByProfileId(profile.uid)).to.be.fulfilled.then(
+        response => {
+          expect(response).to.deep.equal(profile);
+        }
+      );
+    });
+
+    it('should return undefined when no profile is found', () => {
+      documentReference.get.resolves({
+        // tslint:disable-next-line: no-empty
+        data: () => {},
+        exists: false
+      });
+
+      expect(repo.findByProfileId(profile.uid)).to.be.fulfilled.then(
+        response => {
+          // tslint:disable-next-line: no-unused-expression
+          expect(response).to.be.undefined;
+        }
+      );
+    });
   });
 });

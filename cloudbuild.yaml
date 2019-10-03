@@ -6,8 +6,11 @@ steps:
   - name: "gcr.io/cloud-builders/npm"
     args: ["run", "lint"]
   - name: "gcr.io/cloud-builders/npm"
+    id: build
     args: ["run", "build"]
   - name: "gcr.io/cloud-builders/gcloud"
+    waitFor:
+      - build
     args:
       - functions
       - deploy
@@ -17,3 +20,15 @@ steps:
       - --runtime=nodejs10
       - --region=us-east1
       - --entry-point=createProfileFunction
+  - name: "gcr.io/cloud-builders/gcloud"
+    waitFor:
+      - build
+    args:
+      - functions
+      - deploy
+      - profile-query
+      - --source=.
+      - --trigger-http
+      - --runtime=nodejs10
+      - --region=us-east1
+      - --entry-point=queryProfileFunction

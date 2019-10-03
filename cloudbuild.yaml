@@ -18,7 +18,7 @@ steps:
       - --source=.
       - --trigger-http
       - --runtime=nodejs10
-      - --region=us-east1
+      - --region=us-central1
       - --entry-point=createProfileFunction
   - name: "gcr.io/cloud-builders/gcloud"
     waitFor:
@@ -30,5 +30,5 @@ steps:
       - --source=.
       - --trigger-http
       - --runtime=nodejs10
-      - --region=us-east1
+      - --region=us-central1
       - --entry-point=queryProfileFunction

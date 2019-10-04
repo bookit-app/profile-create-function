@@ -1,24 +1,36 @@
 'use strict';
 
 import { Firestore } from '@google-cloud/firestore';
-import { isEmpty } from 'lodash';
+import { isEmpty, omit } from 'lodash';
 
 const PROFILE_COLLECTION = 'profile';
+
+function buildProfile(profile: IProfile) {
+  const data = omit(profile, ['uid']);
+
+  data.gender = isEmpty(data.gender) ? 'O' : data.gender;
+  data.birthday = isEmpty(data.birthday) ? '' : data.birthday;
+  data.isProvider = data.isProvider === undefined ? false : data.isProvider;
+  data.isSocial = data.isSocial === undefined ? false : data.isSocial;
+
+  return data;
+}
 
 const profileRepositoryFactory = (firestore: Firestore) => {
   const createProfile = async (profile: IProfile) => {
     await firestore
       .collection(PROFILE_COLLECTION)
       .doc(profile.uid)
-      .create({
-        birthday: profile.birthday,
-        firstName: profile.lastName,
-        gender: profile.gender,
-        isProvider: profile.isProvider,
-        isSocial: profile.isSocial,
-        lastName: profile.firstName,
-        phoneNumber: profile.phoneNumber
-      });
+      .create(buildProfile(profile));
+
+    return;
+  };
+
+  const replaceProfile = async (profile: IProfile) => {
+    await firestore
+      .collection(PROFILE_COLLECTION)
+      .doc(profile.uid)
+      .set(buildProfile(profile), { merge: true });
 
     return;
   };
@@ -40,26 +52,35 @@ const profileRepositoryFactory = (firestore: Firestore) => {
 
   const repo: IProfileRepository = {
     create: createProfile,
-    findByProfileId: queryProfile
+    findByProfileId: queryProfile,
+    replace: replaceProfile
   };
 
   return repo;
 };
 
 export interface IProfile {
-  birthday: Date;
+  address?: {
+    city: string;
+    state: string;
+    streetAddress: string;
+    zip: string;
+  };
+  birthday?: string;
+  email: string;
   firstName: string;
-  gender: 0 | 1 | 2;
-  isProvider: boolean;
-  isSocial: boolean;
+  gender?: 'M' | 'F' | 'O';
+  isProvider?: boolean;
+  isSocial?: boolean;
   lastName: string;
-  phoneNumber: string;
+  phoneNumber?: string;
   uid: string;
 }
 
 export interface IProfileRepository {
   create: (profile: IProfile) => Promise<void>;
   findByProfileId: (profileId: string) => Promise<IProfile | undefined>;
+  replace: (profile: IProfile) => Promise<void>;
 }
 
 export { profileRepositoryFactory };

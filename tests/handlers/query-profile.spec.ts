@@ -27,7 +27,8 @@ const res = {
 const findProfileByIdStub = stub();
 const profileRepositoryMock: IProfileRepository = {
   create: stub(),
-  findByProfileId: findProfileByIdStub
+  findByProfileId: findProfileByIdStub,
+  replace: stub()
 };
 
 const queryProfileHandler = queryProfileHandlerFactory(
@@ -35,9 +36,16 @@ const queryProfileHandler = queryProfileHandlerFactory(
 );
 
 const profile = {
-  birthday: new Date(),
+  address: {
+    city: 'city',
+    state: 'NY',
+    streetAddress: 'a street somewhere',
+    zip: '12345'
+  },
+  birthday: '2018-11-13',
+  email: 'test@test.com',
   firstName: 'test-first-name',
-  gender: 1,
+  gender: 'M',
   isProvider: false,
   isSocial: true,
   lastName: 'test-last-name',

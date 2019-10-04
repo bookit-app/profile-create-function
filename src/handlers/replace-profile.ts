@@ -9,10 +9,10 @@ import {
 } from '../constants/error-responses';
 import { IProfile, IProfileRepository } from '../repository/profile-repository';
 import definitions from '../schema/definitions.json';
-import schema from '../schema/post-request-schema.json';
+import schema from '../schema/put-request-schema.json';
 
-function createProfileHandlerFactory(profileRepository: IProfileRepository) {
-  const createProfile = async (req: any, res: any) => {
+function replaceProfileHandlerFactory(profileRepository: IProfileRepository) {
+  const replaceProfile = async (req: any, res: any) => {
     const profile: IProfile = req.body;
 
     const validator = new Ajv({ schemas: [schema, definitions] });
@@ -28,7 +28,7 @@ function createProfileHandlerFactory(profileRepository: IProfileRepository) {
 
     // TODO: Verify that the authenticated use is the user for the profiled profile.uid
     try {
-      await profileRepository.create(profile);
+      await profileRepository.replace(profile);
       res.sendStatus(CREATED);
     } catch (err) {
       // tslint:disable-next-line: no-console
@@ -39,11 +39,11 @@ function createProfileHandlerFactory(profileRepository: IProfileRepository) {
   };
 
   return {
-    createProfile
-  } as ICreateProfileHandler;
+    replaceProfile
+  } as IReplaceProfileHandler;
 }
 
-export interface ICreateProfileHandler {
-  createProfile: (req: any, res: any) => Promise<void>;
+export interface IReplaceProfileHandler {
+  replaceProfile: (req: any, res: any) => Promise<void>;
 }
-export { createProfileHandlerFactory };
+export { replaceProfileHandlerFactory };

@@ -14,14 +14,21 @@ import {
 } from '../../src/repository/profile-repository';
 
 const profile: IProfile = {
-  birthday: new Date(),
+  address: {
+    city: 'city',
+    state: 'NY',
+    streetAddress: 'a street somewhere',
+    zip: '12345'
+  },
+  birthday: '2018-11-13',
+  email: 'test@test.com',
   firstName: 'test-first-name',
-  gender: 1,
-  isProvider: false,
+  gender: 'M',
+  isProvider: true,
   isSocial: true,
   lastName: 'test-last-name',
   phoneNumber: '123-123-1234',
-  uid: 'test-profile'
+  uid: 'TEST-UID'
 };
 
 describe('profile-repository: unit tests', () => {
@@ -42,6 +49,25 @@ describe('profile-repository: unit tests', () => {
     it('create should resolve', () => {
       documentReference.create.resolves();
       return expect(repo.create(profile)).to.be.fulfilled;
+    });
+
+    it('should enforce default values on create', () => {
+      const testProfile: IProfile = {
+        address: {
+          city: 'city',
+          state: 'NY',
+          streetAddress: 'a street somewhere',
+          zip: '12345'
+        },
+        email: 'test@test.com',
+        firstName: 'test-first-name',
+        lastName: 'test-last-name',
+        phoneNumber: '123-123-1234',
+        uid: 'TEST-UID'
+      };
+
+      documentReference.create.resolves();
+      return expect(repo.create(testProfile)).to.be.fulfilled;
     });
   });
 
@@ -73,5 +99,31 @@ describe('profile-repository: unit tests', () => {
         }
       );
     });
+  });
+
+  context('replace', () => {
+    it('replace should resolve', () => {
+      documentReference.set.resolves();
+      return expect(repo.replace(profile)).to.be.fulfilled;
+    });
+  });
+
+  it('should enforce default values on replace', () => {
+    const testProfile: IProfile = {
+      address: {
+        city: 'city',
+        state: 'NY',
+        streetAddress: 'a street somewhere',
+        zip: '12345'
+      },
+      email: 'test@test.com',
+      firstName: 'test-first-name',
+      lastName: 'test-last-name',
+      phoneNumber: '123-123-1234',
+      uid: 'TEST-UID'
+    };
+
+    documentReference.set.resolves();
+    return expect(repo.replace(testProfile)).to.be.fulfilled;
   });
 });

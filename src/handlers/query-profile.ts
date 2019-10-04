@@ -15,6 +15,7 @@ function queryProfileHandlerFactory(profileRepository: IProfileRepository) {
     if (isEmpty(req.query) || isEmpty(req.query.profileId)) {
       res.status(BAD_REQUEST);
       res.send(profiledIdMissing);
+      return;
     }
 
     const profileId: string = req.query.profileId;

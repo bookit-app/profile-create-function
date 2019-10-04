@@ -3,8 +3,7 @@
 import { expect } from 'chai';
 import { BAD_REQUEST, CREATED } from 'http-status-codes';
 import { stub } from 'sinon';
-import { duplicateProfile } from '../../src/constants/error-responses';
-import { createProfileHandlerFactory } from '../../src/handlers';
+import { replaceProfileHandlerFactory } from '../../src/handlers';
 import { IProfileRepository } from '../../src/repository/profile-repository';
 
 const req = {
@@ -12,7 +11,7 @@ const req = {
     address: {
       city: 'city',
       state: 'NY',
-      streetAddress: 'a street somewhere',
+      street_address: 'a street somewhere',
       zip: '12345'
     },
     birthday: '2018-11-13',
@@ -42,14 +41,14 @@ const profileRepositoryMock: IProfileRepository = {
   replace: replaceStub
 };
 
-const createProfileHandler = createProfileHandlerFactory(
+const replaceProfileHandler = replaceProfileHandlerFactory(
   profileRepositoryMock as IProfileRepository
 );
 
 describe('create-profile: unit tests', () => {
   it('should respond with a 201 when profile is created', () => {
-    createStub.resolves();
-    expect(createProfileHandler.createProfile(req, res)).to.be.fulfilled.then(
+    replaceStub.resolves();
+    expect(replaceProfileHandler.replaceProfile(req, res)).to.be.fulfilled.then(
       () => {
         // tslint:disable-next-line: no-unused-expression
         expect(res.sendStatus.called).to.be.true;
@@ -60,12 +59,12 @@ describe('create-profile: unit tests', () => {
   });
 
   it('should respond with a 400 when the schema validation fails', () => {
-    createStub.resolves();
+    replaceStub.resolves();
     const badReq = {
       body: {}
     };
     expect(
-      createProfileHandler.createProfile(badReq, res)
+      replaceProfileHandler.replaceProfile(badReq, res)
     ).to.be.fulfilled.then(() => {
       // tslint:disable-next-line: no-unused-expression
       expect(res.status.called).to.be.true;
@@ -74,9 +73,9 @@ describe('create-profile: unit tests', () => {
     });
   });
 
-  it('should respond with a 400 when the profile creation fails', () => {
-    createStub.rejects(new Error('FORCED ERROR'));
-    expect(createProfileHandler.createProfile(req, res)).to.be.fulfilled.then(
+  it('should respond with a 400 when the profile update fails', () => {
+    replaceStub.rejects(new Error('FORCED ERROR'));
+    expect(replaceProfileHandler.replaceProfile(req, res)).to.be.fulfilled.then(
       () => {
         // tslint:disable-next-line: no-unused-expression
         expect(res.status.called).to.be.true;
@@ -84,8 +83,6 @@ describe('create-profile: unit tests', () => {
         expect(res.status.calledWithExactly(BAD_REQUEST)).to.be.true;
         // tslint:disable-next-line: no-unused-expression
         expect(res.send.called).to.be.true;
-        // tslint:disable-next-line: no-unused-expression
-        expect(res.send.calledWith(duplicateProfile)).to.be.true;
       }
     );
   });

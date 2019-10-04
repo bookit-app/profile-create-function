@@ -6,7 +6,8 @@
     "start": "functions-framework --source dist/index.js --target=$FUNCTION",
     "lint": "grunt tslint",
     "grunt": "grunt default",
-    "build": "grunt ts",
+    "build": "grunt build",
+    "tsc": "tsc",
     "test-unit": "grunt mochaTest:unit",
     "test": "grunt nyc:cover"
   },
@@ -38,7 +39,6 @@
     "grunt-mocha-test": "^0.13.3",
     "grunt-run": "^0.8.1",
     "grunt-simple-nyc": "^3.0.0",
-    "grunt-ts": "^6.0.0-beta.22",
     "grunt-tslint": "^5.0.2",
     "husky": "^3.0.7",
     "mocha": "^6.2.1",

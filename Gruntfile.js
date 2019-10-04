@@ -1,7 +1,7 @@
 module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-mocha-test');
   grunt.loadNpmTasks('grunt-simple-nyc');
-  grunt.loadNpmTasks('grunt-ts');
+  grunt.loadNpmTasks('grunt-run');
   grunt.loadNpmTasks('grunt-tslint');
 
   grunt.initConfig({
@@ -50,12 +50,14 @@ module.exports = function(grunt) {
         src: ['src/**/*.ts']
       }
     },
-    ts: {
-      default: {
-        tsconfig: './tsconfig.json'
+    run: {
+      transpile: {
+        cmd: 'npm',
+        args: ['run', 'tsc']
       }
     }
   });
 
-  grunt.registerTask('default', ['tslint', 'ts', 'nyc:cover']);
+  grunt.registerTask('build', ['tslint', 'nyc:cover', 'run:transpile']);
+  grunt.registerTask('default', ['tslint', 'run:transpile']);
 };

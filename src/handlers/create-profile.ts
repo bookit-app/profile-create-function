@@ -3,12 +3,12 @@
 import Ajv from 'ajv';
 import { BAD_REQUEST, CREATED } from 'http-status-codes';
 import { clone } from 'lodash';
-import schema from '../../schema/profile.json';
 import {
   duplicateProfile,
   failedSchemaValidation
 } from '../constants/error-responses';
 import { IProfile, IProfileRepository } from '../repository/profile-repository';
+import schema from '../schema/profile.json';
 
 function createProfileHandlerFactory(profileRepository: IProfileRepository) {
   const createProfile = async (req: any, res: any) => {

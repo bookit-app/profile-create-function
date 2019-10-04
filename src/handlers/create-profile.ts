@@ -26,7 +26,6 @@ function createProfileHandlerFactory(profileRepository: IProfileRepository) {
     }
 
     // TODO: Verify that the authenticated use is the user for the profiled profile.uid
-    // TODO: Build in data validations probably based on a JSON Schema or the OpenAPI specification
     try {
       await profileRepository.create(profile);
       res.sendStatus(CREATED);

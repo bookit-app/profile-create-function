@@ -2,13 +2,21 @@
   "$schema": "http://json-schema.org/schema#",
   "$id": "http://bookit.com/schemas/post-request-schema.json",
   "type": "object",
-  "allOf": [
-    { "$ref": "definitions.json#/definitions/profile" },
-    {
+  "merge": {
+    "source": { "$ref": "definitions.json#/definitions/profile" },
+    "with": {
       "type": "object",
       "properties": {
         "address": { "$ref": "definitions.json#/definitions/address" }
       }
     }
+  },
+  "required": [
+    "uid",
+    "firstName",
+    "lastName",
+    "email",
+    "isProvider",
+    "isSocial"
   ]
 }

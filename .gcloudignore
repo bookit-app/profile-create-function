@@ -14,15 +14,11 @@
 .gitignore
 
 node_modules
-src
 README.md
-tsconfig.json
-tslint.json
 .DS_Store
 cloudbuild*
 Gruntfile.js
 tests
-gcloud-env.yaml
 coverage
 .tscache
 .nyc_output

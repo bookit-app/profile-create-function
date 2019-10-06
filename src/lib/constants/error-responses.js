@@ -1,32 +1,25 @@
 'use strict';
 
-const duplicateProfile = {
+exports.duplicateProfile = {
   code: 'PROFILE_ALREADY_EXISTS',
   message: 'A profile for the provided ID already exists.',
-  technicalError: '' as any
+  technicalError: ''
 };
 
-const profiledIdMissing = {
+exports.profiledIdMissing = {
   code: 'REQUEST_MALFORMED',
   message: 'profileId is a required query parameter',
-  technicalError: '' as any
+  technicalError: ''
 };
 
-const failedSchemaValidation = {
+exports.failedSchemaValidation = {
   code: 'REQUEST_MALFORMED',
   message: 'Payload does not pass schema validation',
-  technicalError: '' as any
+  technicalError: ''
 };
 
-const systemError = {
+exports.systemError = {
   code: 'SYSTEM_ERROR',
   message: 'Oops something went wrong on our end.',
-  technicalError: '' as any
-};
-
-export {
-  duplicateProfile,
-  profiledIdMissing,
-  failedSchemaValidation,
-  systemError
+  technicalError: ''
 };

@@ -41,14 +41,7 @@
           "enum": ["M", "F", "O"]
         }
       },
-      "required": [
-        "uid",
-        "firstName",
-        "lastName",
-        "email",
-        "isProvider",
-        "isSocial"
-      ]
+      "additionalProperties": false
     },
     "address": {
       "type": "object",
@@ -71,7 +64,8 @@
         "long": {
           "type": "string"
         }
-      }
+      },
+      "additionalProperties": false
     }
   }
 }

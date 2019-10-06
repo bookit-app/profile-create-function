@@ -6,7 +6,8 @@
     "start": "functions-framework --source index.js --target=updateProfile"
   },
   "dependencies": {
-    "@google-cloud/functions-framework": "^1.3.2"
+    "@google-cloud/functions-framework": "^1.3.2",
+    "@hapi/joi": "^16.1.7"
   },
   "devDependencies": {},
   "engines": {

@@ -6,12 +6,8 @@ const {
   duplicateProfile,
   failedSchemaValidation
 } = require('../../lib/constants/error-responses');
-const definitions = require('../../schema/definitions.json');
 const { isEmpty } = require('../../../node_modules/lodash'); // Using the root dependency
-const schema = require('../../schema/patch-request-schema.json');
-const validator = require('../../lib/util/validator').getValidator({
-  schemas: [schema, definitions]
-});
+const { schema } = require('./validator');
 
 module.exports = profileRepository => {
   return {
@@ -19,16 +15,14 @@ module.exports = profileRepository => {
       const patchedProfile = req.body;
 
       // TODO: Verify that the authenticated user is the user for the profiled profile.uid
+      const { error } = await schema.validate(patchedProfile);
 
-      if (
-        !isEmpty(patchedProfile) &&
-        validator.validate(schema, patchedProfile)
-      ) {
+      if (!isEmpty(patchedProfile) && isEmpty(error)) {
         await processRequest(res, profileRepository, patchedProfile);
         return;
       }
 
-      rejectRequest(res, validator.errors);
+      rejectRequest(res, error);
     }
   };
 };
@@ -38,8 +32,6 @@ async function processRequest(res, profileRepository, patchedProfile) {
     await profileRepository.update(patchedProfile);
     res.sendStatus(OK);
   } catch (err) {
-    // tslint:disable-next-line: no-console
-    console.error(err.message);
     res.status(BAD_REQUEST);
     res.send(duplicateProfile);
   }

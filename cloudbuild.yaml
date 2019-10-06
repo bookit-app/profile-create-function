@@ -20,12 +20,14 @@ steps:
       - root-install
     args: ["install"]
     dir: src/services/update-profile
+  
+  # Validate build
   - name: "gcr.io/cloud-builders/npm"
     id: lint
     args: ["run", "lint"]
   - name: "gcr.io/cloud-builders/npm"
     id: test-unit
-    args: ["run", "test-unit"]
+    args: ["run", "test"]
 
   # Build and push docker images
   - name: "gcr.io/cloud-builders/docker"

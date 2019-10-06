@@ -1,16 +1,15 @@
 'use strict';
 
-import { expect } from 'chai';
-import {
+const { expect } = require('chai');
+const {
   BAD_REQUEST,
   INTERNAL_SERVER_ERROR,
   NOT_FOUND,
   OK
-} from 'http-status-codes';
-import { stub } from 'sinon';
-import { profiledIdMissing } from '../../src/constants/error-responses';
-import { queryProfileHandlerFactory } from '../../src/handlers';
-import { IProfileRepository } from '../../src/repository/profile-repository';
+} = require('../../src/lib/constants').statusCodes;
+const { stub } = require('sinon');
+const { profiledIdMissing } = require('../../src/lib/constants').errors;
+const queryProfile = require('../../src/services/query-profile/handler');
 
 const req = {
   query: {
@@ -24,20 +23,23 @@ const res = {
   status: stub()
 };
 
-const findProfileByIdStub = stub();
-const profileRepositoryMock: IProfileRepository = {
-  create: stub(),
-  findByProfileId: findProfileByIdStub
+const profileRepositoryMock = {
+  findByProfileId: stub()
 };
 
-const queryProfileHandler = queryProfileHandlerFactory(
-  profileRepositoryMock as IProfileRepository
-);
+const handler = queryProfile(profileRepositoryMock);
 
 const profile = {
-  birthday: new Date(),
+  address: {
+    city: 'city',
+    state: 'NY',
+    streetAddress: 'a street somewhere',
+    zip: '12345'
+  },
+  birthday: '2018-11-13',
+  email: 'test@test.com',
   firstName: 'test-first-name',
-  gender: 1,
+  gender: 'M',
   isProvider: false,
   isSocial: true,
   lastName: 'test-last-name',
@@ -47,8 +49,8 @@ const profile = {
 
 describe('create-profile: unit tests', () => {
   it('should respond with a 200 and the profile', () => {
-    findProfileByIdStub.resolves(profile);
-    expect(queryProfileHandler.queryProfile(req, res)).to.be.fulfilled.then(
+    profileRepositoryMock.findByProfileId.resolves(profile);
+    expect(handler.queryProfile(req, res)).to.be.fulfilled.then(
       () => {
         // tslint:disable-next-line: no-unused-expression
         expect(res.status.called).to.be.true;
@@ -61,7 +63,7 @@ describe('create-profile: unit tests', () => {
   });
 
   it('should respond with a 400 when the no query parameters are provided', () => {
-    expect(queryProfileHandler.queryProfile({}, res)).to.be.fulfilled.then(
+    expect(handler.queryProfile({}, res)).to.be.fulfilled.then(
       () => {
         // tslint:disable-next-line: no-unused-expression
         expect(res.status.called).to.be.true;
@@ -75,7 +77,7 @@ describe('create-profile: unit tests', () => {
 
   it('should respond with a 400 when the no profileId is provided', () => {
     expect(
-      queryProfileHandler.queryProfile({ query: {} }, res)
+      handler.queryProfile({ query: {} }, res)
     ).to.be.fulfilled.then(() => {
       // tslint:disable-next-line: no-unused-expression
       expect(res.status.called).to.be.true;
@@ -87,11 +89,11 @@ describe('create-profile: unit tests', () => {
   });
 
   it('should respond with a 404 when the profile does not exist', () => {
-    findProfileByIdStub.resolves(undefined);
-    expect(queryProfileHandler.queryProfile(req, res)).to.be.fulfilled.then(
+    profileRepositoryMock.findByProfileId.resolves(undefined);
+    expect(handler.queryProfile(req, res)).to.be.fulfilled.then(
       () => {
         // tslint:disable-next-line: no-unused-expression
-        expect(findProfileByIdStub.calledWith(profile.uid)).to.be.true;
+        expect(profileRepositoryMock.findByProfileId.calledWith(profile.uid)).to.be.true;
         // tslint:disable-next-line: no-unused-expression
         expect(res.sendStatus.called).to.be.true;
         // tslint:disable-next-line: no-unused-expression
@@ -101,8 +103,8 @@ describe('create-profile: unit tests', () => {
   });
 
   it('should respond with a 500 something fails with the query', () => {
-    findProfileByIdStub.rejects(new Error('FORCED_ERROR'));
-    expect(queryProfileHandler.queryProfile(req, res)).to.be.fulfilled.then(
+    profileRepositoryMock.findByProfileId.rejects(new Error('FORCED_ERROR'));
+    expect(handler.queryProfile(req, res)).to.be.fulfilled.then(
       () => {
         // tslint:disable-next-line: no-unused-expression
         expect(res.status.called).to.be.true;

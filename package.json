@@ -4,15 +4,34 @@
   "main": "dist/index.js",
   "scripts": {
     "lint": "eslint src",
-    "grunt": "grunt default",
-    "build": "grunt build",
-    "tsc": "tsc",
-    "test-unit": "grunt mochaTest:unit",
-    "test": "grunt nyc:cover"
+    "test": "NODE_ENV=test nyc mocha tests --recursive --exit"
+  },
+  "nyc": {
+    "all": false,
+    "check-coverage": true,
+    "include": [
+      "src/**/*.js"
+    ],
+    "exclude": [
+      "node_modules"
+    ],
+    "lines": 90,
+    "functions": 90,
+    "branches": 90,
+    "statements": 90,
+    "reporter": [
+      "html",
+      "text",
+      "text-summary"
+    ],
+    "instrument": true
   },
   "husky": {
     "hooks": {
-      "pre-commit": "npm run grunt"
+      "pre-commit": [
+        "npm run lint",
+        "npm run test"
+      ]
     }
   },
   "dependencies": {

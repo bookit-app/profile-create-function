@@ -3,6 +3,24 @@ steps:
     id: root-install
     args: ["install"]
   - name: "gcr.io/cloud-builders/npm"
+    id: create-profile-install
+    waitFor:
+      - root-install
+    args: ["install"]
+    dir: src/services/create-profile
+  - name: "gcr.io/cloud-builders/npm"
+    id: query-profile-install
+    waitFor:
+      - root-install
+    args: ["install"]
+    dir: src/services/query-profile
+  - name: "gcr.io/cloud-builders/npm"
+    id: update-profile-install
+    waitFor:
+      - root-install
+    args: ["install"]
+    dir: src/services/update-profile
+  - name: "gcr.io/cloud-builders/npm"
     id: lint
     args: ["run", "lint"]
   - name: "gcr.io/cloud-builders/npm"

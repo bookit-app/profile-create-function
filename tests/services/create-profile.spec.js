@@ -22,7 +22,7 @@ const req = {
     isSocial: true,
     lastName: 'test-last-name',
     phoneNumber: '123-123-1234',
-    uid: 'TEST-UID'
+    uid: 'TEST'
   }
 };
 

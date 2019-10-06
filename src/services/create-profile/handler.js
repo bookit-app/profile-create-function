@@ -6,11 +6,8 @@ const {
   duplicateProfile,
   failedSchemaValidation
 } = require('../../lib/constants/error-responses');
-const definitions = require('../../schema/definitions.json');
-const schema = require('../../schema/post-request-schema.json');
-const validator = require('../../lib/util/validator').getValidator({
-  schemas: [schema, definitions]
-});
+const { isEmpty } = require('../../../node_modules/lodash'); // Using the root dependency
+const { schema } = require('./validator');
 
 module.exports = profileRepository => {
   return {
@@ -19,12 +16,14 @@ module.exports = profileRepository => {
 
       // TODO: Verify that the authenticated use is the user for the profiled profile.uid
 
-      if (validator.validate(schema, profile)) {
+      const { error } = await schema.validate(profile);
+
+      if (isEmpty(error)) {
         await processRequest(res, profileRepository, profile);
         return;
       }
 
-      rejectRequest(res, validator.errors);
+      rejectRequest(res, error);
     }
   };
 };

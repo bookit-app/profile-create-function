@@ -35,7 +35,7 @@ const profileRepositoryMock = {
 const handler = updateProfile(profileRepositoryMock);
 
 describe('create-profile: unit tests', () => {
-  it('should respond with a 201 when profile is created', () => {
+  it('should respond with a 201 when profile is updated', () => {
     profileRepositoryMock.update.resolves();
     expect(handler.patchProfile(req, res)).to.be.fulfilled.then(() => {
       expect(res.sendStatus.called).to.be.true;
@@ -59,21 +59,19 @@ describe('create-profile: unit tests', () => {
     profileRepositoryMock.update.resolves();
     const badReq = {
       body: {
-        body: {
-          address: {
-            city: 'city',
-            state: 'NY',
-            streetAddress: 'a street somewhere',
-            zip: '12345',
-            test: 'INVALID FIELD'
-          },
-          birthday: '2018-11-13',
-          gender: 'M',
-          isProvider: false,
-          isSocial: true,
-          phoneNumber: '123-123-1234',
-          test: 'INVALID FIELD'
-        }
+        address: {
+          city: 'city',
+          state: 'NY',
+          streetAddress: 'a street somewhere',
+          zip: '12345'
+        },
+        test: 'TEST',
+        birthday: '2018-11-13',
+        gender: 'M',
+        isProvider: false,
+        isSocial: true,
+        phoneNumber: '123-123-1234',
+        uid: 'TEST1234'
       }
     };
 

@@ -17,7 +17,6 @@ RUN npm install --only=production
 
 # Copy shared code to the image
 COPY src/lib ./src/lib
-COPY src/schema ./src/schema
 
 # Use build argument to only copy what is necessary
 COPY src/services/${service} ./src/services/${service}

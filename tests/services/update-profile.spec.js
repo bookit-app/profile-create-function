@@ -3,9 +3,10 @@
 const { expect } = require('chai');
 const { BAD_REQUEST, OK } = require('http-status-codes');
 const { stub } = require('sinon');
-const updateProfile = require('../../src/services/update-profile/handler');
+const updateProfileService = require('../../src/services/update-profile/handler');
 
 const req = {
+  header: stub().returns('TEST/TRACE'),
   body: {
     address: {
       city: 'city',
@@ -32,9 +33,18 @@ const profileRepositoryMock = {
   update: stub()
 };
 
-const handler = updateProfile(profileRepositoryMock);
+const logMock = {
+  info: stub().resolves(),
+  error: stub().resolves()
+};
 
-describe('create-profile: unit tests', () => {
+const handler = updateProfileService(profileRepositoryMock, logMock);
+
+describe('update-profile: unit tests', () => {
+  it('should throw error when required dependencies are not provided', () => {
+    expect(updateProfileService).to.throw(Error);
+  });
+
   it('should respond with a 201 when profile is updated', () => {
     profileRepositoryMock.update.resolves();
     expect(handler.patchProfile(req, res)).to.be.fulfilled.then(() => {
@@ -46,6 +56,7 @@ describe('create-profile: unit tests', () => {
   it('should respond with a 400 when no body is provided', () => {
     profileRepositoryMock.update.resolves();
     const badReq = {
+      header: stub().returns('TEST/TRACE'),
       body: {}
     };
 
@@ -58,6 +69,7 @@ describe('create-profile: unit tests', () => {
   it('should respond with a 400 when the schema validation fails', () => {
     profileRepositoryMock.update.resolves();
     const badReq = {
+      header: stub().returns('TEST/TRACE'),
       body: {
         address: {
           city: 'city',

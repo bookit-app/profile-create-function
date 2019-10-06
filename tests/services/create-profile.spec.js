@@ -3,18 +3,18 @@
 const { expect } = require('chai');
 const { BAD_REQUEST, CREATED } = require('http-status-codes');
 const { stub } = require('sinon');
-const { duplicateProfile } = require('../../src/lib/constants').errors;
 const createProfileService = require('../../src/services/create-profile/handler');
 
 const req = {
+  header: stub().returns('TEST/TRACE'),
   body: {
     address: {
       city: 'city',
       state: 'NY',
       streetAddress: 'a street somewhere',
-      zip: '12345'
+      zip: 12345
     },
-    birthday: '2018-11-13',
+    birthday: '11-13-2019',
     email: 'test@test.com',
     firstName: 'test-first-name',
     gender: 'M',
@@ -36,9 +36,18 @@ const profileRepositoryMock = {
   create: stub()
 };
 
-const handler = createProfileService(profileRepositoryMock);
+const logMock = {
+  info: stub().resolves(),
+  error: stub().resolves()
+};
+
+const handler = createProfileService(profileRepositoryMock, logMock);
 
 describe('create-profile: unit tests', () => {
+  it('should throw error when required dependencies are not provided', () => {
+    expect(createProfileService).to.throw(Error);
+  });
+
   it('should respond with a 201 when profile is created', () => {
     profileRepositoryMock.create.resolves();
     expect(handler.createProfile(req, res)).to.be.fulfilled.then(() => {
@@ -50,6 +59,7 @@ describe('create-profile: unit tests', () => {
   it('should respond with a 400 when the schema validation fails', () => {
     profileRepositoryMock.create.resolves();
     const badReq = {
+      header: stub().returns('TEST/TRACE'),
       body: {}
     };
     expect(handler.createProfile(badReq, res)).to.be.fulfilled.then(() => {
@@ -64,7 +74,6 @@ describe('create-profile: unit tests', () => {
       expect(res.status.called).to.be.true;
       expect(res.status.calledWithExactly(BAD_REQUEST)).to.be.true;
       expect(res.send.called).to.be.true;
-      expect(res.send.calledWith(duplicateProfile)).to.be.true;
     });
   });
 });

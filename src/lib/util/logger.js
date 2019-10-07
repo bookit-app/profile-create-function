@@ -1,18 +1,17 @@
 'use strict';
 
-const { Logging } = require('@google-cloud/logging');
-const logger = new Logging();
+const winston = require('winston');
+const { LoggingWinston } = require('@google-cloud/logging-winston');
 
-function getEntry(log, message) {
-  return log.entry({ resource: { type: 'cloud_run_revision' } }, message);
-}
+const loggingWinston = new LoggingWinston();
 
-module.exports.info = (logName, message) => {
-  const log = logger.log(logName);
-  return log.info(getEntry(log, message));
-};
+// Create a Winston logger that streams to Stackdriver Logging
+// Logs will be written to: "projects/YOUR_PROJECT_ID/logs/winston_log"
+const logger = winston.createLogger({
+  level: 'info',
+  transports: [new winston.transports.Console(), loggingWinston]
+});
 
-module.exports.error = (logName, message) => {
-  const log = logger.log(logName);
-  return log.error(getEntry(log, message));
-};
+module.exports = logger;
+
+// TODO: Setup MW: https://www.npmjs.com/package/@google-cloud/logging-winston

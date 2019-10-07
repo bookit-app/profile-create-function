@@ -1,6 +1,5 @@
 'use strict';
 
-const LOG_NAME = 'create-profile-handler';
 const { BAD_REQUEST, CREATED } = require('../../lib/constants').statusCodes;
 const {
   systemError,
@@ -9,14 +8,12 @@ const {
 const { extractTraceIdFromHeader } = require('../../lib/util');
 const { clone, isEmpty } = require('lodash');
 const { schema } = require('./validator');
-let logger;
+const logger = require('../../lib/util/logger');
 
-module.exports = (profileRepository, log) => {
-  if (isEmpty(profileRepository) || isEmpty(log)) {
+module.exports = profileRepository => {
+  if (isEmpty(profileRepository)) {
     throw new Error('Dependencies not provided.');
   }
-
-  logger = log;
 
   return {
     createProfile: async (req, res) => {
@@ -41,7 +38,7 @@ async function processRequest(res, profileRepository, profile, trace) {
   try {
     await profileRepository.create(profile);
 
-    await logger.info(LOG_NAME, {
+    logger.info({
       code: 'PROFILE_CREATED',
       message: `Profile for UID ${profile.uid} successfully created`
     });
@@ -60,7 +57,7 @@ async function rejectRequest(res, errors, trace) {
 
   const response = clone(failedSchemaValidation);
   response.technicalError = errors.details;
-  await logger.error(LOG_NAME, response);
+  logger.error(response);
 
   response.traceId = trace;
   res.send(response);

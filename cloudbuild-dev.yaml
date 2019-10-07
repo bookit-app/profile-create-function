@@ -1,22 +1,33 @@
 steps:
-  - name: "gcr.io/cloud-builders/npm"
+  - name: "node:10.16.3"
     id: root-install
+    entrypoint: npm
     args: ["install"]
-  - name: "gcr.io/cloud-builders/npm"
+
+  - name: "node:10.16.3"
     id: create-profile-install
+    entrypoint: npm
     args: ["install"]
     dir: src/services/create-profile
-  - name: "gcr.io/cloud-builders/npm"
+
+  - name: "node:10.16.3"
     id: query-profile-install
+    entrypoint: npm
     args: ["install"]
     dir: src/services/query-profile
-  - name: "gcr.io/cloud-builders/npm"
+
+  - name: "node:10.16.3"
     id: update-profile-install
+    entrypoint: npm
     args: ["install"]
     dir: src/services/update-profile
-  - name: "gcr.io/cloud-builders/npm"
+
+  - name: "node:10.16.3"
     id: lint
+    entrypoint: npm
     args: ["run", "lint"]
-  - name: "gcr.io/cloud-builders/npm"
+    
+  - name: "node:10.16.3"
     id: test-unit
+    entrypoint: npm
     args: ["run", "test"]

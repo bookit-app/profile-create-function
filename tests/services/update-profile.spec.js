@@ -33,12 +33,7 @@ const profileRepositoryMock = {
   update: stub()
 };
 
-const logMock = {
-  info: stub().resolves(),
-  error: stub().resolves()
-};
-
-const handler = updateProfileService(profileRepositoryMock, logMock);
+const handler = updateProfileService(profileRepositoryMock);
 
 describe('update-profile: unit tests', () => {
   it('should throw error when required dependencies are not provided', () => {

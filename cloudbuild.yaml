@@ -1,32 +1,42 @@
 steps:
-  - name: "gcr.io/cloud-builders/npm"
+  - name: "node:10.16.3"
     id: root-install
+    entrypoint: npm
     args: ["install"]
-  - name: "gcr.io/cloud-builders/npm"
+
+  - name: "node:10.16.3"
     id: create-profile-install
     waitFor:
       - root-install
+    entrypoint: npm
     args: ["install"]
     dir: src/services/create-profile
-  - name: "gcr.io/cloud-builders/npm"
+
+  - name: "node:10.16.3"
     id: query-profile-install
     waitFor:
       - root-install
+    entrypoint: npm
     args: ["install"]
     dir: src/services/query-profile
-  - name: "gcr.io/cloud-builders/npm"
+
+  - name: "node:10.16.3"
     id: update-profile-install
     waitFor:
       - root-install
+    entrypoint: npm
     args: ["install"]
     dir: src/services/update-profile
   
   # Validate build
-  - name: "gcr.io/cloud-builders/npm"
+  - name: "node:10.16.3"
     id: lint
+    entrypoint: npm
     args: ["run", "lint"]
-  - name: "gcr.io/cloud-builders/npm"
+
+  - name: "node:10.16.3"
     id: test-unit
+    entrypoint: npm
     args: ["run", "test"]
 
   # Build and push docker images
@@ -41,11 +51,13 @@ steps:
       - -t
       - gcr.io/sweng-581-capstone/create-profile:0.0.1
       - .
+
   - name: "gcr.io/cloud-builders/docker"
     id: push-create-profile
     waitFor:
       - create-profile:0.0.1
     args: ["push", "gcr.io/sweng-581-capstone/create-profile:0.0.1"]
+
   - name: "gcr.io/cloud-builders/docker"
     id: query-profile:0.0.1
     waitFor:
@@ -57,11 +69,13 @@ steps:
       - -t
       - gcr.io/sweng-581-capstone/query-profile:0.0.1
       - .
+
   - name: "gcr.io/cloud-builders/docker"
     id: push-query-profile
     waitFor:
       - query-profile:0.0.1
     args: ["push", "gcr.io/sweng-581-capstone/query-profile:0.0.1"]
+
   - name: "gcr.io/cloud-builders/docker"
     id: update-profile:0.0.1
     waitFor:
@@ -73,6 +87,7 @@ steps:
       - -t
       - gcr.io/sweng-581-capstone/update-profile:0.0.1
       - .
+
   - name: "gcr.io/cloud-builders/docker"
     id: push-update-profile
     waitFor:
@@ -92,6 +107,7 @@ steps:
       - --region=us-central1
       - --platform=managed
       - --allow-unauthenticated
+
   - name: "gcr.io/cloud-builders/gcloud"
     waitFor:
       - push-query-profile
@@ -104,6 +120,7 @@ steps:
       - --region=us-central1
       - --platform=managed
       - --allow-unauthenticated
+
   - name: "gcr.io/cloud-builders/gcloud"
     waitFor:
       - push-update-profile
@@ -116,6 +133,7 @@ steps:
       - --region=us-central1
       - --platform=managed
       - --allow-unauthenticated
+      
 images:
   - "gcr.io/sweng-581-capstone/create-profile:0.0.1"
   - "gcr.io/sweng-581-capstone/query-profile:0.0.1"

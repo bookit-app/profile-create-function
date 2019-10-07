@@ -21,12 +21,7 @@ const profileRepositoryMock = {
   findByProfileId: stub()
 };
 
-const logMock = {
-  info: stub().resolves(),
-  error: stub().resolves()
-};
-
-const handler = queryProfileService(profileRepositoryMock, logMock);
+const handler = queryProfileService(profileRepositoryMock);
 
 const profile = {
   address: {

@@ -1,6 +1,5 @@
 'use strict';
 
-const LOG_NAME = 'update-profile-handler';
 const { BAD_REQUEST, OK } = require('../../lib/constants').statusCodes;
 const { clone } = require('lodash');
 const {
@@ -10,14 +9,12 @@ const {
 const { extractTraceIdFromHeader } = require('../../lib/util');
 const { isEmpty } = require('../../../node_modules/lodash'); // Using the root dependency
 const { schema } = require('./validator');
-let logger;
+const logger = require('../../lib/util/logger');
 
-module.exports = (profileRepository, log) => {
-  if (isEmpty(profileRepository) || isEmpty(log)) {
+module.exports = profileRepository => {
+  if (isEmpty(profileRepository)) {
     throw new Error('Dependencies not provided.');
   }
-
-  logger = log;
 
   return {
     patchProfile: async (req, res) => {
@@ -40,7 +37,7 @@ module.exports = (profileRepository, log) => {
 async function processRequest(res, profileRepository, patchedProfile, trace) {
   try {
     await profileRepository.update(patchedProfile);
-    await logger.info(LOG_NAME, {
+    logger.info({
       code: 'PROFILE_UPDATED',
       message: `Profile for UID ${patchedProfile.uid} successfully updated`
     });
@@ -59,7 +56,7 @@ async function rejectRequest(res, errors, trace) {
 
   const response = clone(failedSchemaValidation);
   response.technicalError = errors;
-  await logger.error(LOG_NAME, response);
+  logger.error(response);
 
   response.traceId = trace;
   res.send(response);

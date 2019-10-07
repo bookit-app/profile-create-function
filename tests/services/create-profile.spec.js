@@ -36,12 +36,7 @@ const profileRepositoryMock = {
   create: stub()
 };
 
-const logMock = {
-  info: stub().resolves(),
-  error: stub().resolves()
-};
-
-const handler = createProfileService(profileRepositoryMock, logMock);
+const handler = createProfileService(profileRepositoryMock);
 
 describe('create-profile: unit tests', () => {
   it('should throw error when required dependencies are not provided', () => {

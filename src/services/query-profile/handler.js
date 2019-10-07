@@ -1,6 +1,5 @@
 'use strict';
 
-const LOG_NAME = 'query-profile-handler';
 const {
   BAD_REQUEST,
   INTERNAL_SERVER_ERROR,
@@ -13,14 +12,13 @@ const {
   systemError
 } = require('../../lib/constants').errors;
 const { extractTraceIdFromHeader } = require('../../lib/util');
-let logger;
 
-module.exports = (profileRepository, log) => {
-  if (isEmpty(profileRepository) || isEmpty(log)) {
+const logger = require('../../lib/util/logger');
+
+module.exports = (profileRepository) => {
+  if (isEmpty(profileRepository)) {
     throw new Error('Dependencies not provided.');
   }
-
-  logger = log;
 
   const queryProfile = async (req, res) => {
     const trace = extractTraceIdFromHeader(req);
@@ -49,8 +47,8 @@ async function processRequest(res, profileRepository, profileId, trace) {
   } catch (err) {
     const response = clone(systemError);
     response.technicalError = err.message;
-    response.traceId == trace;
-    await logger.error(LOG_NAME, response);
+    response.traceId = trace;
+    logger.error(response);
     res.status(INTERNAL_SERVER_ERROR);
     res.send(response);
   }
@@ -60,7 +58,7 @@ async function rejectRequest(res, trace) {
   res.status(BAD_REQUEST);
   const response = clone(profiledIdMissing);
   response.traceId = trace;
-  await logger.error(LOG_NAME, response);
+  logger.error(response);
 
   res.send(profiledIdMissing);
   return;

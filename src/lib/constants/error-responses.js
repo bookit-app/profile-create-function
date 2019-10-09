@@ -8,7 +8,7 @@ exports.duplicateProfile = {
 
 exports.profiledIdMissing = {
   code: 'REQUEST_MALFORMED',
-  message: 'profileId is a required query parameter',
+  message: 'profileId is a required parameter',
   technicalError: ''
 };
 

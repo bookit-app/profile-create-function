@@ -29,6 +29,23 @@ class ProfileRepository {
     return;
   }
 
+  /**
+   * Trigger the delete into Firestore for the document at
+   * path profile/{profileId}
+   * 
+   * @param {String} profileId
+   * @returns
+   * @memberof ProfileRepository
+   */
+  async delete(profileId) {
+    await this.firestore
+      .collection(PROFILE_COLLECTION)
+      .doc(profileId)
+      .delete();
+
+    return;
+  }
+
   async findByProfileId(profileId) {
     const documentReference = await this.firestore
       .collection(PROFILE_COLLECTION)

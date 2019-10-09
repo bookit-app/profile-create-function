@@ -26,7 +26,7 @@ function deleteProfile(req, res) {
 // Use express here so that the URL is properly parsed
 // This will allow access to path parameters as needed
 const app = express();
-app.delete('/:profileId', (req, res) => {
+app.delete('/profile/:profileId', (req, res) => {
   deleteProfile(req, res);
 });
 

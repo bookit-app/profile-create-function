@@ -4,6 +4,7 @@ const firestore = require('../../lib/repository/firestore');
 const { METHOD_NOT_ALLOWED } = require('../../lib/constants').statusCodes;
 const ProfileRepository = require('../../lib/repository/profile-repository');
 const handler = require('./handler')(new ProfileRepository(firestore));
+const express = require('express');
 
 /**
  * Entry point for the deleteProfile service.
@@ -14,10 +15,19 @@ const handler = require('./handler')(new ProfileRepository(firestore));
  * @param {Express.Response} res
  * @returns {*} void
  */
-module.exports.deleteProfile = (req, res) => {
-  if (req.method === 'POST') {
+function deleteProfile(req, res) {
+  if (req.method === 'DELETE') {
     handler.deleteProfile(req, res);
   } else {
     res.sendStatus(METHOD_NOT_ALLOWED);
   }
-};
+}
+
+// Use express here so that the URL is properly parsed
+// This will allow access to path parameters as needed
+const app = express();
+app.delete('/:profileId', (req, res) => {
+  deleteProfile(req, res);
+});
+
+module.exports.app = app;

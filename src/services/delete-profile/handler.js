@@ -2,7 +2,8 @@
 
 const {
   BAD_REQUEST,
-  OK,
+  INTERNAL_SERVER_ERROR,
+  NO_CONTENT,
   NOT_FOUND
 } = require('../../lib/constants').statusCodes;
 const {
@@ -28,16 +29,17 @@ module.exports = profileRepository => {
   return {
     deleteProfile: async (req, res) => {
       const data = {
-        profileId: req.body
+        uid: req.params.profileId
       };
       const trace = extractTraceIdFromHeader(req);
 
       // TODO: Verify that the authenticated use is the user for the profiled profile.uid
 
+      console.log(JSON.stringify(data));
       const { error } = await schema.validate(data);
 
       if (isEmpty(error)) {
-        await processRequest(res, profileRepository, profile, trace);
+        await processRequest(res, profileRepository, data.uid, trace);
         return;
       }
 
@@ -56,7 +58,7 @@ module.exports = profileRepository => {
  */
 async function processRequest(res, profileRepository, profileId, trace) {
   try {
-    const profile = await profileRepository.findProfileById(profileId);
+    const profile = await profileRepository.findByProfileId(profileId);
 
     if (!isEmpty(profile)) {
       await profileRepository.delete(profileId);
@@ -66,14 +68,15 @@ async function processRequest(res, profileRepository, profileId, trace) {
         message: `Profile for UID ${profile.uid} successfully deleted`
       });
 
-      res.sendStatus(OK);
+      res.sendStatus(NO_CONTENT);
     } else {
       res.sendStatus(NOT_FOUND);
     }
   } catch (err) {
     const response = clone(systemError);
     response.traceId == trace;
-    res.status(BAD_REQUEST);
+    response.technicalError = err.message;
+    res.status(INTERNAL_SERVER_ERROR);
     res.send(response);
   }
 }

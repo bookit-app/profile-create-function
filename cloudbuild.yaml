@@ -135,7 +135,6 @@ steps:
       - --image=gcr.io/sweng-581-capstone/create-profile:0.0.1
       - --region=us-central1
       - --platform=managed
-      - --allow-unauthenticated
 
   - name: "gcr.io/cloud-builders/gcloud"
     waitFor:
@@ -148,7 +147,6 @@ steps:
       - --image=gcr.io/sweng-581-capstone/delete-profile:0.0.1
       - --region=us-central1
       - --platform=managed
-      - --allow-unauthenticated
 
   - name: "gcr.io/cloud-builders/gcloud"
     waitFor:
@@ -161,7 +159,6 @@ steps:
       - --image=gcr.io/sweng-581-capstone/query-profile:0.0.1
       - --region=us-central1
       - --platform=managed
-      - --allow-unauthenticated
 
   - name: "gcr.io/cloud-builders/gcloud"
     waitFor:
@@ -174,7 +171,6 @@ steps:
       - --image=gcr.io/sweng-581-capstone/update-profile:0.0.1
       - --region=us-central1
       - --platform=managed
-      - --allow-unauthenticated
 
 images:
   - "gcr.io/sweng-581-capstone/create-profile:0.0.1"

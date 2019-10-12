@@ -15,18 +15,24 @@ const { extractTraceIdFromHeader } = require('../../lib/util');
 
 const logger = require('../../lib/util/logger');
 
-module.exports = (profileRepository) => {
+/**
+ * queryService handler factory
+ *
+ * @param {Express.Request} res
+ * @param {ProfileRepository} profileRepository
+ */
+module.exports = profileRepository => {
   if (isEmpty(profileRepository)) {
     throw new Error('Dependencies not provided.');
   }
 
   const queryProfile = async (req, res) => {
     const trace = extractTraceIdFromHeader(req);
-    if (isEmpty(req.query) || isEmpty(req.query.profileId)) {
+    if (isEmpty(req.params) || isEmpty(req.params.profileId)) {
       return rejectRequest(res, trace);
     }
 
-    await processRequest(res, profileRepository, req.query.profileId, trace);
+    await processRequest(res, profileRepository, req.params.profileId, trace);
   };
 
   return {
@@ -34,6 +40,14 @@ module.exports = (profileRepository) => {
   };
 };
 
+/**
+ * Handles the processing for the query service
+ *
+ * @param {Express.Request} res
+ * @param {ProfileRepository} profileRepository
+ * @param {String} profileId
+ * @param {String} trace
+ */
 async function processRequest(res, profileRepository, profileId, trace) {
   try {
     const profile = await profileRepository.findByProfileId(profileId);

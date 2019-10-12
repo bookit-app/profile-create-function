@@ -49,7 +49,7 @@ describe('create-profile: unit tests', () => {
   it('should respond with a 200 and the profile', () => {
     const req = {
       header: stub().returns('TEST/TRACE'),
-      query: {
+      params: {
         profileId: 'TEST-UID'
       }
     };
@@ -62,7 +62,7 @@ describe('create-profile: unit tests', () => {
     });
   });
 
-  it('should respond with a 400 when the no query parameters are provided', () => {
+  it('should respond with a 400 when the no parameters are provided', () => {
     const req = {
       header: stub().returns('TEST/TRACE')
     };
@@ -74,10 +74,10 @@ describe('create-profile: unit tests', () => {
     });
   });
 
-  it('should respond with a 400 when the no profileId is provided', () => {
+  it('should respond with a 400 when no profileId is provided', () => {
     const req = {
       header: stub().returns('TEST/TRACE'),
-      query: {
+      params: {
       }
     };
 
@@ -93,7 +93,7 @@ describe('create-profile: unit tests', () => {
   it('should respond with a 404 when the profile does not exist', () => {
     const req = {
       header: stub().returns('TEST/TRACE'),
-      query: {
+      params: {
         profileId: 'TEST-UID'
       }
     };
@@ -110,7 +110,7 @@ describe('create-profile: unit tests', () => {
   it('should respond with a 500 something fails with the query', () => {
     const req = {
       header: stub().returns('TEST/TRACE'),
-      query: {
+      params: {
         profileId: 'TEST-UID'
       }
     };

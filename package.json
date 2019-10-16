@@ -1,5 +1,5 @@
 {
-  "name": "profile-ops-function",
+  "name": "profile-services",
   "description": "Cloud Function: Bookit Profile Creation Function",
   "scripts": {
     "lint": "eslint src",

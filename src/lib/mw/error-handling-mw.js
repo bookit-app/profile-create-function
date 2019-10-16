@@ -1,7 +1,5 @@
 'use strict';
 
-const logger = require('../util/logger');
-
 /**
  * Express error middleware to properly format
  * a json response when errors are generated
@@ -16,7 +14,7 @@ const logger = require('../util/logger');
 module.exports = (err, req, res, next) => {
   const { errorCode, statusCode, message } = err;
 
-  logger.error(message);
+  console.log(message);
 
   res.status(statusCode).json({
     errorCode,

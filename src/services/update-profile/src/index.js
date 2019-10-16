@@ -17,7 +17,7 @@ app.patch(
   require('../../../lib/mw/user-mw'),
   require('../../../lib/mw/trace-id-mw'),
   require('../../../lib/mw/payload-validation-mw')(schema),
-  require('./create-profile-mw')(profileRepositoryInstance),
+  require('./update-profile-mw')(profileRepositoryInstance),
   require('./success-mw')
 );
 

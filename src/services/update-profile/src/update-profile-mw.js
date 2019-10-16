@@ -3,7 +3,6 @@
 const ServiceError = require('../../../lib/util/service-error');
 const { errors } = require('../../../lib/constants');
 const { clone } = require('lodash');
-const logger = require('../../../lib/util/logger');
 
 module.exports = profileRepository => async (req, res, next) => {
   try {
@@ -11,7 +10,7 @@ module.exports = profileRepository => async (req, res, next) => {
     profile.uid = req.apiUserInfo.id;
     await profileRepository.update(profile);
 
-    logger.info(`Profile for UID ${profile.uid} successfully updated`);
+    console.log(`Profile for UID ${profile.uid} successfully updated`);
     next();
   } catch (err) {
     const error = clone(errors.updateFailed);

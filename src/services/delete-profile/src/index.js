@@ -5,7 +5,6 @@ const bodyParser = require('body-parser');
 const {
   profileRepositoryInstance
 } = require('../../../lib/repository/profile-repository');
-const logger = require('../../../lib/util/logger');
 
 // Setup Express Server
 const app = express();
@@ -26,8 +25,8 @@ app.use(require('../../../lib/mw/error-handling-mw'));
 // Start up the server and listen on the provided port
 app.listen(process.env.PORT, err => {
   if (err) {
-    logger.info(`Server failed to start due to ${err.message}`);
+    console.log(`Server failed to start due to ${err.message}`);
     return;
   }
-  logger.info(`Server is running on port ${process.env.PORT}`);
+  console.log(`Server is running on port ${process.env.PORT}`);
 });

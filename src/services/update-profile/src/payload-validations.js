@@ -44,6 +44,29 @@ module.exports.schema = {
         }
       },
       required: ['streetAddress', 'city', 'state', 'zip']
+    },
+    preferences: {
+      type: 'object',
+      properties: {
+        day: {
+          type: 'number',
+          minimum: 0,
+          maximum: 6
+        },
+        time: {
+          type: 'string',
+          enum: ['MORNING', 'AFTERNOON', 'EVENING']
+        },
+        providerId: {
+          type: 'string'
+        },
+        staffClassification: {
+          type: 'string'
+        },
+        style: {
+          type: 'string'
+        }
+      }
     }
   }
 };

@@ -118,6 +118,39 @@ describe('profile-repository: unit tests', () => {
       );
     });
 
+    it('should return profile the request sub components when found', () => {
+      documentReference.get.resolves({
+        data: () => profile,
+        exists: true
+      });
+
+      expect(
+        repo.findByProfileId(profile.uid, { select: 'address' })
+      ).to.be.fulfilled.then(response => {
+        expect(response).to.deep.equal({
+          address: {
+            city: 'city',
+            state: 'NY',
+            streetAddress: 'a street somewhere',
+            zip: '12345'
+          }
+        });
+      });
+    });
+
+    it('should return nothing if the request sub components are not found', () => {
+      documentReference.get.resolves({
+        data: () => profile,
+        exists: true
+      });
+
+      expect(
+        repo.findByProfileId(profile.uid, { select: 'test' })
+      ).to.be.fulfilled.then(response => {
+        expect(response).to.deep.equal({});
+      });
+    });
+
     it('should return undefined when no profile is found', () => {
       documentReference.get.resolves({
         data: () => {},

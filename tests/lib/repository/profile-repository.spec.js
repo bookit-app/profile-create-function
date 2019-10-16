@@ -2,7 +2,7 @@
 
 const { expect } = require('chai');
 const { createStubInstance } = require('sinon');
-const ProfileRepository = require('../../src/lib/repository/profile-repository');
+const ProfileRepository = require('../../../src/lib/repository/profile-repository');
 const {
   CollectionReference,
   DocumentReference,

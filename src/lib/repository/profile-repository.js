@@ -26,13 +26,13 @@ class ProfileRepository {
       .doc(profile.uid)
       .create(this.buildProfile(profile));
 
-    return;
+    return profile.uid;
   }
 
   /**
    * Trigger the delete into Firestore for the document at
    * path profile/{profileId}
-   * 
+   *
    * @param {String} profileId
    * @returns
    * @memberof ProfileRepository
@@ -72,3 +72,7 @@ class ProfileRepository {
 }
 
 module.exports = ProfileRepository;
+
+module.exports.profileRepositoryInstance = new ProfileRepository(
+  require('./firestore')
+);

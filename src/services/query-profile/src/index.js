@@ -14,6 +14,7 @@ app.get(
   '/profile/:profileId',
   require('../../../lib/mw/user-mw'),
   require('../../../lib/mw/trace-id-mw'),
+  require('./query-options-mw'),
   require('./query-profile-mw')(profileRepositoryInstance)
 );
 

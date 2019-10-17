@@ -46,7 +46,7 @@ class ProfileRepository {
     return;
   }
 
-  async findByProfileId(profileId) {
+  async findByProfileId(profileId, options) {
     const documentReference = await this.firestore
       .collection(PROFILE_COLLECTION)
       .doc(profileId)
@@ -54,7 +54,13 @@ class ProfileRepository {
 
     if (!isEmpty(documentReference) && documentReference.exists) {
       const profile = documentReference.data();
-      profile.uid = profileId;
+
+      if (!isEmpty(options)) {
+        const data = {};
+        data[options.select] = profile[options.select];
+        return data;
+      }
+
       return profile;
     }
 

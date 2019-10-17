@@ -2,7 +2,7 @@
 
 module.exports.schema = {
   $async: true,
-  $id: 'http://bookit.com/schemas/profile-create-schema.json',
+  $id: 'http://bookit.com/schemas/profile-update-schema.json',
   type: 'object',
   required: ['email', 'firstName', 'lastName', 'isProvider'],
   properties: {
@@ -56,6 +56,27 @@ module.exports.schema = {
         }
       },
       required: ['streetAddress', 'city', 'state', 'zip']
+    },
+    preferences: {
+      type: 'object',
+      properties: {
+        day: {
+          type: 'number'
+        },
+        time: {
+          type: 'string',
+          enum: ['MORNING', 'AFTERNOON', 'EVENING']
+        },
+        providerId: {
+          type: 'string'
+        },
+        staffClassification: {
+          type: 'string'
+        },
+        style: {
+          type: 'string'
+        }
+      }
     }
   }
 };

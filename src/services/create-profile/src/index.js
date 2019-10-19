@@ -2,10 +2,27 @@
 
 const express = require('express');
 const bodyParser = require('body-parser');
-const {
-  profileRepositoryInstance
-} = require('../../../lib/repository/profile-repository');
-const { schema } = require('./payload-validations');
+
+// These will be lazily loaded when needed.
+// Per Cloud Run best practice we should lazily load
+// references https://cloud.google.com/run/docs/tips
+let repo, createProfileMW, validationMW, schema;
+
+function createHandlerMW(req, res, next) {
+  repo =
+    repo ||
+    require('../../../lib/repository/profile-repository')
+      .profileRepositoryInstance;
+  createProfileMW = createProfileMW || require('./create-profile-mw')(repo);
+  return createProfileMW(req, res, next);
+}
+
+function validateMW(req, res, next) {
+  schema = schema || require('./payload-validations').schema;
+  validationMW =
+    validationMW || require('../../../lib/mw/payload-validation-mw')(schema);
+  return validationMW(req, res, next);
+}
 
 // Setup Express Server
 const app = express();
@@ -16,8 +33,8 @@ app.post(
   '/profile',
   require('../../../lib/mw/user-mw'),
   require('../../../lib/mw/trace-id-mw'),
-  require('../../../lib/mw/payload-validation-mw')(schema),
-  require('./create-profile-mw')(profileRepositoryInstance),
+  validateMW,
+  createHandlerMW,
   require('./success-mw')
 );
 

@@ -4,27 +4,34 @@ const { isEmpty, omit } = require('lodash');
 
 const PROFILE_COLLECTION = 'profile';
 
+function buildProfile(profile) {
+  const data = omit(profile, ['uid']);
+
+  data.gender = isEmpty(data.gender) ? 'O' : data.gender;
+  data.birthday = isEmpty(data.birthday) ? '' : data.birthday;
+  data.isProvider = data.isProvider === undefined ? false : data.isProvider;
+  data.isSocial = data.isSocial === undefined ? false : data.isSocial;
+
+  return data;
+}
+
 class ProfileRepository {
   constructor(firestore) {
     this.firestore = firestore;
   }
 
-  buildProfile(profile) {
-    const data = omit(profile, ['uid']);
-
-    data.gender = isEmpty(data.gender) ? 'O' : data.gender;
-    data.birthday = isEmpty(data.birthday) ? '' : data.birthday;
-    data.isProvider = data.isProvider === undefined ? false : data.isProvider;
-    data.isSocial = data.isSocial === undefined ? false : data.isSocial;
-
-    return data;
-  }
-
+  /**
+   * Create a new profile
+   *
+   * @param {*} profile
+   * @returns
+   * @memberof ProfileRepository
+   */
   async create(profile) {
     await this.firestore
       .collection(PROFILE_COLLECTION)
       .doc(profile.uid)
-      .create(this.buildProfile(profile));
+      .create(buildProfile(profile));
 
     return profile.uid;
   }
@@ -46,6 +53,16 @@ class ProfileRepository {
     return;
   }
 
+  /**
+   * Query for a profile by the profileId
+   * additionally options can be used to request
+   * a specific sub map of the profile
+   *
+   * @param { select: string } profileId
+   * @param {*} options
+   * @returns
+   * @memberof ProfileRepository
+   */
   async findByProfileId(profileId, options) {
     const documentReference = await this.firestore
       .collection(PROFILE_COLLECTION)
@@ -67,6 +84,13 @@ class ProfileRepository {
     return undefined;
   }
 
+  /**
+   * Commit updates to the users profile
+   *
+   * @param {*} profile
+   * @returns
+   * @memberof ProfileRepository
+   */
   async update(profile) {
     await this.firestore
       .collection(PROFILE_COLLECTION)

@@ -69,19 +69,19 @@ class ProfileRepository {
       .doc(profileId)
       .get();
 
-    if (!isEmpty(documentReference) && documentReference.exists) {
-      const profile = documentReference.data();
-
-      if (!isEmpty(options)) {
-        const data = {};
-        data[options.select] = profile[options.select];
-        return data;
-      }
-
-      return profile;
+    if (isEmpty(documentReference) || !documentReference.exists) {
+      return {};
     }
 
-    return undefined;
+    let profile = {};
+
+    if (isEmpty(options) || isEmpty(options.select)) {
+      profile = documentReference.data();
+    } else {
+      profile[options.select] = documentReference.get(options.select);
+    }
+
+    return profile;
   }
 
   /**

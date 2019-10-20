@@ -70,6 +70,15 @@ module.exports.schema = {
         providerId: {
           type: 'string'
         },
+        city: {
+          type: 'string',
+          minLength: 1
+        },
+        state: {
+          type: 'string',
+          minLength: 2,
+          maxLength: 2
+        },
         staffClassification: {
           type: 'string'
         },

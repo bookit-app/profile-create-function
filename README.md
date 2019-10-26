@@ -92,7 +92,7 @@ The delete profile service exposes a route to **DELETE** profiles. When a reques
 
 ## Security
 
-The services themselves are not containing any logic pertaining to security and are not therefore assuming any particular approach to security. The is expected to tbe delegated to the environment which they are deployed and running. The only the expectation is that there be the appropriate user details provided as part of the HTTP Header so that it can identity the user ID and email to inject into the necessary queries. As these services are deployed into an environment with Cloud Endpoints and are running on Cloud Run within Google Cloud Platform they expect that the `X-Endpoint-API-UserInfo` header be provided with the user data as described within the [Google Documentation](https://cloud.google.com/endpoints/docs/openapi/authenticating-users-firebase).
+The services themselves are not containing any logic pertaining to security and are not therefore assuming any particular approach to security. Security is delegated to the environment which they are deployed and running. The only expectation is that there be the appropriate user details provided as part of the HTTP Header so that it can identity the user ID and email to inject into the necessary queries. As these services are deployed into an environment with Cloud Endpoints and are running on Cloud Run within Google Cloud Platform they expect that the `X-Endpoint-API-UserInfo` header be provided with the user data as described within the [Google Documentation](https://cloud.google.com/endpoints/docs/openapi/authenticating-users-firebase).
 
 ## Deployment
 

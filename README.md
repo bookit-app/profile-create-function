@@ -1,3 +1,5 @@
+[![Coverage Status](https://coveralls.io/repos/github/bookit-app/profile-services/badge.svg?branch=master)](https://coveralls.io/github/bookit-app/profile-services?branch=master)
+
 # profile-services
 
 The services defined within this repo generate REST endpoints as follows:

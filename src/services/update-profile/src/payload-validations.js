@@ -5,6 +5,7 @@ module.exports.schema = {
   $id: 'http://bookit.com/schemas/profile-update-schema.json',
   type: 'object',
   required: [],
+  additionalProperties: false,
   properties: {
     birthday: {
       type: 'string',

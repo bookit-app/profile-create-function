@@ -237,7 +237,7 @@ steps:
       - beta
       - run
       - deploy
-      - provider-create-notification-processor
+      - provider-create-notification-profile-processor
       - --image=gcr.io/sweng-581-capstone/provider-create-notification-profile-processor:0.0.1
       - --region=us-central1
       - --platform=managed
@@ -249,7 +249,7 @@ steps:
       - beta
       - run
       - deploy
-      - provider-delete-notification-processor
+      - provider-delete-notification-profile-processor
       - --image=gcr.io/sweng-581-capstone/provider-delete-notification-profile-processor:0.0.1
       - --region=us-central1
       - --platform=managed

@@ -9,8 +9,6 @@ module.exports = profileRepository => async (req, res, next) => {
     const profile = req.body;
     profile.uid = req.apiUserInfo.id;
     await profileRepository.update(profile);
-
-    console.log(`Profile for UID ${profile.uid} successfully updated`);
     next();
   } catch (err) {
     const error = clone(errors.updateFailed);

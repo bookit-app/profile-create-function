@@ -7,10 +7,7 @@ const { clone, isEmpty } = require('../../../../node_modules/lodash');
 
 module.exports = profileRepository => async (req, res, next) => {
   try {
-    const profile = await profileRepository.findByProfileId(
-      req.apiUserInfo.id,
-      req.profileQueryOptions
-    );
+    const profile = await profileRepository.findByProfileId(req.apiUserInfo.id);
 
     isEmpty(profile) ? res.sendStatus(NOT_FOUND) : res.status(OK).send(profile);
   } catch (err) {

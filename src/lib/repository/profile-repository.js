@@ -63,7 +63,7 @@ class ProfileRepository {
    * @returns
    * @memberof ProfileRepository
    */
-  async findByProfileId(profileId, options) {
+  async findByProfileId(profileId) {
     const documentReference = await this.firestore
       .collection(PROFILE_COLLECTION)
       .doc(profileId)
@@ -72,32 +72,33 @@ class ProfileRepository {
     if (isEmpty(documentReference) || !documentReference.exists) {
       return {};
     }
-
-    let profile = {};
-
-    if (isEmpty(options) || isEmpty(options.select)) {
-      profile = documentReference.data();
-    } else {
-      profile[options.select] = documentReference.get(options.select);
-    }
-
-    return profile;
+    return documentReference.data();
   }
 
   /**
    * Commit updates to the users profile
    *
    * @param {*} profile
-   * @returns
+   * @returns {void}
    * @memberof ProfileRepository
    */
   async update(profile) {
-    await this.firestore
+    const documentReference = this.firestore
       .collection(PROFILE_COLLECTION)
-      .doc(profile.uid)
-      .set(omit(profile, ['uid']), { merge: true });
+      .doc(profile.uid);
 
-    return;
+    return this.firestore.runTransaction(async t => {
+      const document = await t.get(documentReference);
+
+      // The profile has been deleted so nothing to update at this point
+      if (isEmpty(document) || !document.exists) {
+        const err = new Error('Profile Does not exist');
+        err.code = 'PROFILE_NOT_EXISTING';
+        return Promise.reject(err);
+      }
+
+      await t.set(documentReference, omit(profile, ['uid']), { merge: true });
+    });
   }
 }
 

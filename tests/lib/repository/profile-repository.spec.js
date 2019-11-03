@@ -28,11 +28,11 @@ const profile = {
 };
 
 describe('profile-repository: unit tests', () => {
-  let repo;
+  let repo, firestore;
   let collectionReference, documentReference;
 
   before(() => {
-    const firestore = createStubInstance(Firestore);
+    firestore = createStubInstance(Firestore);
     collectionReference = createStubInstance(CollectionReference);
     documentReference = createStubInstance(DocumentReference);
     collectionReference.doc.returns(documentReference);
@@ -47,6 +47,7 @@ describe('profile-repository: unit tests', () => {
     documentReference.delete.resetHistory();
     documentReference.create.resetHistory();
     collectionReference.doc.resetHistory();
+    firestore.runTransaction.resetHistory();
   });
 
   context('create', () => {
@@ -118,40 +119,7 @@ describe('profile-repository: unit tests', () => {
       );
     });
 
-    it('should return profile the request sub components when found', () => {
-      documentReference.get.resolves({
-        data: () => profile,
-        exists: true
-      });
-
-      expect(
-        repo.findByProfileId(profile.uid, { select: 'address' })
-      ).to.be.fulfilled.then(response => {
-        expect(response).to.deep.equal({
-          address: {
-            city: 'city',
-            state: 'NY',
-            streetAddress: 'a street somewhere',
-            zip: '12345'
-          }
-        });
-      });
-    });
-
-    it('should return nothing if the request sub components are not found', () => {
-      documentReference.get.resolves({
-        data: () => profile,
-        exists: true
-      });
-
-      expect(
-        repo.findByProfileId(profile.uid, { select: 'test' })
-      ).to.be.fulfilled.then(response => {
-        expect(response).to.deep.equal({});
-      });
-    });
-
-    it('should return undefined when no profile is found', () => {
+    it('should return empty object when no profile is found', () => {
       documentReference.get.resolves({
         data: () => {},
         exists: false
@@ -159,35 +127,41 @@ describe('profile-repository: unit tests', () => {
 
       expect(repo.findByProfileId(profile.uid)).to.be.fulfilled.then(
         response => {
-          expect(response).to.be.undefined;
+          expect(response).to.deep.equal({});
         }
       );
     });
   });
 
   context('update', () => {
-    it('should resolve', () => {
+    it('should resolve if profile exists', () => {
+      firestore.runTransaction.callsFake(
+        async func => await func(documentReference)
+      );
+      documentReference.get.resolves({
+        exists: true
+      });
+
       documentReference.set.resolves();
       expect(repo.update(profile)).to.be.fulfilled.then(() => {
         expect(collectionReference.doc.calledWith(profile.uid)).to.be.true;
-        expect(
-          documentReference.set.calledWith({
-            address: {
-              city: 'city',
-              state: 'NY',
-              streetAddress: 'a street somewhere',
-              zip: '12345'
-            },
-            birthday: '2018-11-13',
-            email: 'test@test.com',
-            firstName: 'test-first-name',
-            gender: 'M',
-            isProvider: true,
-            isSocial: true,
-            lastName: 'test-last-name',
-            phoneNumber: '123-123-1234'
-          })
-        ).to.be.true;
+        expect(documentReference.set.called).to.be.true;
+      });
+    });
+
+    it('should reject if profile does not exists', () => {
+      firestore.runTransaction.callsFake(
+        async func => await func(documentReference)
+      );
+      documentReference.get.resolves({
+        exists: false
+      });
+
+      documentReference.set.resolves();
+      expect(repo.update(profile)).to.be.rejected.then(err => {
+        expect(collectionReference.doc.calledWith(profile.uid)).to.be.true;
+        expect(documentReference.set.called).to.be.false;
+        expect(err.code).to.equal('PROFILE_NOT_EXISTING');
       });
     });
   });

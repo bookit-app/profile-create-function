@@ -6,15 +6,15 @@ const bodyParser = require('body-parser');
 // These will be lazily loaded when needed.
 // Per Cloud Run best practice we should lazily load
 // references https://cloud.google.com/run/docs/tips
-let repo, queryProfileMW;
+let profileRepo, updateMW;
 
-function queryHandlerMW(req, res, next) {
-  repo =
-    repo ||
+function updateHandlerMW(req, res, next) {
+  profileRepo =
+    profileRepo ||
     require('../../../lib/repository/profile-repository')
       .profileRepositoryInstance;
-  queryProfileMW = queryProfileMW || require('./query-profile-mw')(repo);
-  return queryProfileMW(req, res, next);
+  updateMW = updateMW || require('./profile-update-mw')(profileRepo);
+  return updateMW(req, res, next);
 }
 
 // Setup Express Server
@@ -22,11 +22,12 @@ const app = express();
 app.use(bodyParser.json());
 
 // Generate Route with necessary middleware
-app.get(
-  '/profile/:profileId',
-  require('../../../lib/mw/user-mw'),
+app.post(
+  '/',
   require('../../../lib/mw/trace-id-mw'),
-  queryHandlerMW
+  require('../../../lib/mw/convert-pubsub-message-mw'),
+  updateHandlerMW,
+  require('./success-mw')
 );
 
 app.use(require('../../../lib/mw/error-handling-mw'));

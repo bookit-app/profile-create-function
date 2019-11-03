@@ -36,6 +36,18 @@ steps:
     args: ["install"]
     dir: src/services/update-profile
 
+  - name: "node:10.16.3"
+    id: provider-create-notification-processor-install
+    entrypoint: npm
+    args: ["install"]
+    dir: src/services/provider-create-notification-processor
+
+  - name: "node:10.16.3"
+    id: provider-delete-notification-processor-install
+    entrypoint: npm
+    args: ["install"]
+    dir: src/services/provider-delete-notification-processor
+
   # Validate build
   - name: "node:10.16.3"
     id: lint
@@ -123,6 +135,52 @@ steps:
       - update-profile:0.0.1
     args: ["push", "gcr.io/sweng-581-capstone/update-profile:0.0.1"]
 
+  # Build and push docker image: provider-create-notification-processor
+  - name: "gcr.io/cloud-builders/docker"
+    id: provider-create-notification-profile-processor:0.0.1
+    waitFor:
+      - test-unit
+    args:
+      - build
+      - --build-arg
+      - service=provider-create-notification-processor
+      - -t
+      - gcr.io/sweng-581-capstone/provider-create-notification-profile-processor:0.0.1
+      - .
+
+  - name: "gcr.io/cloud-builders/docker"
+    id: push-provider-create-notification-profile-processor
+    waitFor:
+      - provider-create-notification-profile-processor:0.0.1
+    args:
+      [
+        "push",
+        "gcr.io/sweng-581-capstone/provider-create-notification-profile-processor:0.0.1",
+      ]
+
+  # Build and push docker image: provider-delete-notification-processor
+  - name: "gcr.io/cloud-builders/docker"
+    id: provider-delete-notification-profile-processor:0.0.1
+    waitFor:
+      - test-unit
+    args:
+      - build
+      - --build-arg
+      - service=provider-delete-notification-processor
+      - -t
+      - gcr.io/sweng-581-capstone/provider-delete-notification-profile-processor:0.0.1
+      - .
+
+  - name: "gcr.io/cloud-builders/docker"
+    id: push-provider-delete-notification-profile-processor
+    waitFor:
+      - provider-delete-notification-profile-processor:0.0.1
+    args:
+      [
+        "push",
+        "gcr.io/sweng-581-capstone/provider-delete-notification-profile-processor:0.0.1",
+      ]
+
   # Deploy to cloud run
   - name: "gcr.io/cloud-builders/gcloud"
     waitFor:
@@ -172,8 +230,34 @@ steps:
       - --region=us-central1
       - --platform=managed
 
+  - name: "gcr.io/cloud-builders/gcloud"
+    waitFor:
+      - push-provider-create-notification-profile-processor
+    args:
+      - beta
+      - run
+      - deploy
+      - provider-create-notification-profile-processor
+      - --image=gcr.io/sweng-581-capstone/provider-create-notification-profile-processor:0.0.1
+      - --region=us-central1
+      - --platform=managed
+
+  - name: "gcr.io/cloud-builders/gcloud"
+    waitFor:
+      - push-provider-delete-notification-profile-processor
+    args:
+      - beta
+      - run
+      - deploy
+      - provider-delete-notification-profile-processor
+      - --image=gcr.io/sweng-581-capstone/provider-delete-notification-profile-processor:0.0.1
+      - --region=us-central1
+      - --platform=managed
+
 images:
   - "gcr.io/sweng-581-capstone/create-profile:0.0.1"
   - "gcr.io/sweng-581-capstone/delete-profile:0.0.1"
   - "gcr.io/sweng-581-capstone/query-profile:0.0.1"
   - "gcr.io/sweng-581-capstone/update-profile:0.0.1"
+  - "gcr.io/sweng-581-capstone/provider-create-notification-profile-processor:0.0.1"
+  - "gcr.io/sweng-581-capstone/provider-delete-notification-profile-processor:0.0.1"

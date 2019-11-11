@@ -29,6 +29,20 @@ app.get(
   queryHandlerMW
 );
 
+// Generate Route with necessary middleware
+app.get(
+  '/admin/profile/:profileId',
+  (req, res, next) => {
+    req.apiUserInfo = {
+      id: req.params.profileId
+    };
+
+    next();
+  },
+  require('../../../lib/mw/trace-id-mw'),
+  queryHandlerMW
+);
+
 app.use(require('../../../lib/mw/error-handling-mw'));
 
 // Start up the server and listen on the provided port

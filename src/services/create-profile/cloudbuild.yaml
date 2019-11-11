@@ -1,0 +1,41 @@
+steps:
+  - name: "node:10.16.3"
+    id: create-profile-install
+    entrypoint: npm
+    args: ["install"]
+    dir: src/services/create-profile
+
+  # Build and push docker image: Create Profile
+  - name: "gcr.io/cloud-builders/docker"
+    id: create-profile:0.0.1
+    waitFor:
+      - create-profile-install
+    args:
+      - build
+      - --build-arg
+      - service=create-profile
+      - -t
+      - gcr.io/sweng-581-capstone/create-profile:0.0.1
+      - .
+
+  - name: "gcr.io/cloud-builders/docker"
+    id: push-create-profile
+    waitFor:
+      - create-profile:0.0.1
+    args: ["push", "gcr.io/sweng-581-capstone/create-profile:0.0.1"]
+
+  # Deploy to cloud run
+  - name: "gcr.io/cloud-builders/gcloud"
+    waitFor:
+      - push-create-profile
+    args:
+      - beta
+      - run
+      - deploy
+      - create-profile
+      - --image=gcr.io/sweng-581-capstone/create-profile:0.0.1
+      - --region=us-central1
+      - --platform=managed
+
+images:
+  - "gcr.io/sweng-581-capstone/create-profile:0.0.1"

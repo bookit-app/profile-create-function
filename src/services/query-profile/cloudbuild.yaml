@@ -1,0 +1,41 @@
+steps:
+  - name: "node:10.16.3"
+    id: query-profile-install
+    entrypoint: npm
+    args: ["install"]
+    dir: src/services/create-profile
+
+  # Build and push docker image: Query Profile
+  - name: "gcr.io/cloud-builders/docker"
+    id: query-profile:0.0.1
+    waitFor:
+      - query-profile-install
+    args:
+      - build
+      - --build-arg
+      - service=query-profile
+      - -t
+      - gcr.io/sweng-581-capstone/query-profile:0.0.1
+      - .
+
+  - name: "gcr.io/cloud-builders/docker"
+    id: push-query-profile
+    waitFor:
+      - query-profile:0.0.1
+    args: ["push", "gcr.io/sweng-581-capstone/query-profile:0.0.1"]
+
+  # Deploy to cloud run
+  - name: "gcr.io/cloud-builders/gcloud"
+    waitFor:
+      - push-query-profile
+    args:
+      - beta
+      - run
+      - deploy
+      - query-profile
+      - --image=gcr.io/sweng-581-capstone/query-profile:0.0.1
+      - --region=us-central1
+      - --platform=managed
+
+images:
+  - "gcr.io/sweng-581-capstone/query-profile:0.0.1"

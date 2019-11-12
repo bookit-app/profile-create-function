@@ -1,44 +1,7 @@
 steps:
   - name: "node:10.16.3"
-    id: root-install
-    entrypoint: npm
-    args: ["install"]
-
-  - name: "node:10.16.3"
-    id: create-profile-install
-    entrypoint: npm
-    args: ["install"]
-    dir: src/services/create-profile
-
-  - name: "node:10.16.3"
-    id: delete-profile-install
-    entrypoint: npm
-    args: ["install"]
-    dir: src/services/delete-profile
-
-  - name: "node:10.16.3"
-    id: query-profile-install
-    entrypoint: npm
-    args: ["install"]
-    dir: src/services/query-profile
-
-  - name: "node:10.16.3"
-    id: update-profile-install
-    entrypoint: npm
-    args: ["install"]
-    dir: src/services/update-profile
-
-  - name: "node:10.16.3"
-    id: provider-create-notification-processor-install
-    entrypoint: npm
-    args: ["install"]
-    dir: src/services/provider-create-notification-processor
-
-  - name: "node:10.16.3"
-    id: provider-delete-notification-processor-install
-    entrypoint: npm
-    args: ["install"]
-    dir: src/services/provider-delete-notification-processor
+    entrypoint: 'bash'
+    args: ["./install.sh"]
 
   - name: "node:10.16.3"
     id: lint

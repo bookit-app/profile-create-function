@@ -15,14 +15,14 @@ steps:
       - --build-arg
       - service=query-profile
       - -t
-      - gcr.io/bookit-app/query-profile:0.0.1
+      - gcr.io/bookit-app-260021/query-profile:0.0.1
       - .
 
   - name: "gcr.io/cloud-builders/docker"
     id: push-query-profile
     waitFor:
       - query-profile:0.0.1
-    args: ["push", "gcr.io/bookit-app/query-profile:0.0.1"]
+    args: ["push", "gcr.io/bookit-app-260021/query-profile:0.0.1"]
 
   # Deploy to cloud run
   - name: "gcr.io/cloud-builders/gcloud"
@@ -33,9 +33,9 @@ steps:
       - run
       - deploy
       - query-profile
-      - --image=gcr.io/bookit-app/query-profile:0.0.1
+      - --image=gcr.io/bookit-app-260021/query-profile:0.0.1
       - --region=us-east1
       - --platform=managed
 
 images:
-  - "gcr.io/bookit-app/query-profile:0.0.1"
+  - "gcr.io/bookit-app-260021/query-profile:0.0.1"

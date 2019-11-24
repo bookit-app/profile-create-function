@@ -1,4 +1,5 @@
 [![Coverage Status](https://coveralls.io/repos/github/bookit-app/profile-services/badge.svg?branch=master)](https://coveralls.io/github/bookit-app/profile-services?branch=master)
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/c0223d20eac54b1c8da2a7bd4caf4771)](https://www.codacy.com/gh/bookit-app/profile-services?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=bookit-app/profile-services&amp;utm_campaign=Badge_Grade)
 
 # profile-services
 
@@ -9,7 +10,7 @@ The services defined within this repo generate REST endpoints as follows:
 - **PATCH /profile**: To enable a specific profile to be updated. Refer to the [schema](./src/services/update-profile/src/payload-validations.js) for details on the expected payload
 - **DELETE /profile**: To enable a specific profile to be delete
 
-For additional details on the API's refer to the [API Gateway Repo](https://github.com/bookit-app/api-gateway) as this is how the API's are in the end exposed for the consumers.
+For additional details on the APIs refer to the [API Gateway Repo](https://github.com/bookit-app/api-gateway) as this is how the APIs are in the end exposed for the consumers.
 
 ## Design
 

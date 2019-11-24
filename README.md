@@ -1,4 +1,5 @@
 [![Coverage Status](https://coveralls.io/repos/github/bookit-app/profile-services/badge.svg?branch=master)](https://coveralls.io/github/bookit-app/profile-services?branch=master)
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/c0223d20eac54b1c8da2a7bd4caf4771)](https://www.codacy.com/gh/bookit-app/profile-services?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=bookit-app/profile-services&amp;utm_campaign=Badge_Grade)
 
 # profile-services
 

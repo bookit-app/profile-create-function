@@ -9,7 +9,7 @@ The services defined within this repo generate REST endpoints as follows:
 - **PATCH /profile**: To enable a specific profile to be updated. Refer to the [schema](./src/services/update-profile/src/payload-validations.js) for details on the expected payload
 - **DELETE /profile**: To enable a specific profile to be delete
 
-For additional details on the API's refer to the [API Gateway Repo](https://github.com/bookit-app/api-gateway) as this is how the API's are in the end exposed for the consumers.
+For additional details on the APIs refer to the [API Gateway Repo](https://github.com/bookit-app/api-gateway) as this is how the APIs are in the end exposed for the consumers.
 
 ## Design
 
